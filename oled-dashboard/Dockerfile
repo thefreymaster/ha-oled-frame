@@ -4,7 +4,7 @@ ARG BUILD_FROM=ghcr.io/home-assistant/amd64-base-nodejs:20
 FROM node:20-alpine AS builder
 WORKDIR /app
 COPY package*.json ./
-RUN npm ci
+RUN npm install
 COPY . .
 RUN npm run build && npm prune --omit=dev
 
