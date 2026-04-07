@@ -1,0 +1,53 @@
+# OLED Dashboard — Motion Control Automation
+#
+# Prerequisites: Add this to your configuration.yaml:
+#
+# rest_command:
+#   oled_change_view:
+#     url: "http://<YOUR_HA_ADDON_IP>:4000/api/change/{{ view }}"
+#     method: GET
+#
+# Then add this automation via the UI or automations.yaml:
+
+alias: OLED Dashboard Motion Control
+description: >
+  On motion: routes to clock immediately, then photos after 5 min, then blank
+  after 10 min. On motion off: cancels timers and routes to blank immediately.
+trigger:
+  - platform: state
+    entity_id: binary_sensor.kitchen_motion_sensor_motion
+action:
+  - choose:
+      - conditions:
+          - condition: state
+            entity_id: binary_sensor.kitchen_motion_sensor_motion
+            state: "on"
+        sequence:
+          - action: rest_command.oled_change_view
+            data:
+              view: clock
+          - delay:
+              minutes: 5
+          - condition: state
+            entity_id: binary_sensor.kitchen_motion_sensor_motion
+            state: "on"
+          - action: rest_command.oled_change_view
+            data:
+              view: photos
+          - delay:
+              minutes: 5
+          - condition: state
+            entity_id: binary_sensor.kitchen_motion_sensor_motion
+            state: "on"
+          - action: rest_command.oled_change_view
+            data:
+              view: blank
+      - conditions:
+          - condition: state
+            entity_id: binary_sensor.kitchen_motion_sensor_motion
+            state: "off"
+        sequence:
+          - action: rest_command.oled_change_view
+            data:
+              view: blank
+mode: restart

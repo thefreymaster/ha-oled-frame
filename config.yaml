@@ -1,0 +1,31 @@
+name: OLED Dashboard
+version: "1.0.0"
+slug: oled_dashboard
+description: OLED-optimized home dashboard with clock, NWS weather, and Immich photo slideshow
+url: https://github.com/your-repo/oled-dashboard
+arch:
+  - aarch64
+  - amd64
+  - armhf
+  - armv7
+startup: application
+boot: auto
+init: false
+ports:
+  4000/tcp: 4000
+ports_description:
+  4000/tcp: Dashboard web server
+options:
+  ha_url: "http://supervisor/core"
+  ha_token: ""
+  immich_url: ""
+  immich_api_key: ""
+  immich_album_id: ""
+  port: 4000
+schema:
+  ha_url: str
+  ha_token: str
+  immich_url: str
+  immich_api_key: str
+  immich_album_id: str
+  port: int
