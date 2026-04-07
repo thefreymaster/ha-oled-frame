@@ -11,10 +11,7 @@ arch:
 startup: application
 boot: auto
 init: false
-ports:
-  4000/tcp: 4000
-ports_description:
-  4000/tcp: Dashboard web server
+host_network: true
 options:
   ha_url: "http://supervisor/core"
   ha_token: ""
