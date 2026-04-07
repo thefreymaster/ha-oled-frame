@@ -16,6 +16,8 @@ LABEL \
     io.hass.type="addon" \
     io.hass.arch="aarch64|amd64|armhf|armv7"
 
+RUN apk add --no-cache nodejs npm
+
 WORKDIR /app
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/node_modules ./node_modules
