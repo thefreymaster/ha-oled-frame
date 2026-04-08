@@ -16,12 +16,27 @@ function pad(n: number) {
 }
 
 const DAYS = [
-  "Sunday", "Monday", "Tuesday", "Wednesday",
-  "Thursday", "Friday", "Saturday",
+  "Sunday",
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday",
 ];
 const MONTHS = [
-  "January", "February", "March", "April", "May", "June",
-  "July", "August", "September", "October", "November", "December",
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
 ];
 
 const CONDITION_LABEL: Record<string, string> = {
@@ -92,7 +107,13 @@ function Header({ weather }: { weather: HomeWeather | null }) {
   return (
     <Box width="100%">
       {/* Date line */}
-      <Text fontSize="3.2vw" color="gray.600" fontWeight="400" letterSpacing="0.02em" mb="0.5vw">
+      <Text
+        fontSize="3.2vw"
+        color="gray.600"
+        fontWeight="400"
+        letterSpacing="0.02em"
+        mb="0.5vw"
+      >
         {day}, {month} {date}
       </Text>
 
@@ -106,7 +127,13 @@ function Header({ weather }: { weather: HomeWeather | null }) {
           lineHeight="0.9"
         >
           {hours}:{minutes}
-          <Text as="span" fontSize="7vw" fontWeight="300" color="gray.500" ml="1.5vw">
+          <Text
+            as="span"
+            fontSize="7vw"
+            fontWeight="300"
+            color="gray.500"
+            ml="1.5vw"
+          >
             {ampm}
           </Text>
         </Text>
@@ -119,7 +146,7 @@ function Header({ weather }: { weather: HomeWeather | null }) {
             color="gray.300"
             lineHeight="0.9"
           >
-            {weather.temperature}°
+            {Math.round(weather.temperature)}°
           </Text>
         )}
       </HStack>
@@ -127,20 +154,95 @@ function Header({ weather }: { weather: HomeWeather | null }) {
   );
 }
 
-// ── Weather row ───────────────────────────────────────────────────────────────
+// ── Weather condition icons ───────────────────────────────────────────────────
 
-function WeatherRow({ weather }: { weather: HomeWeather }) {
+const CONDITION_EMOJI: Record<string, string> = {
+  "clear-night": "🌙",
+  cloudy: "☁️",
+  exceptional: "⚠️",
+  fog: "🌫️",
+  hail: "🌨️",
+  lightning: "⚡",
+  "lightning-rainy": "⛈️",
+  partlycloudy: "⛅",
+  pouring: "🌧️",
+  rainy: "🌧️",
+  snowy: "❄️",
+  "snowy-rainy": "🌨️",
+  sunny: "☀️",
+  windy: "💨",
+  "windy-variant": "💨",
+};
+
+// ── Wind direction helpers ────────────────────────────────────────────────────
+
+const WIND_DIRS = ["N", "NE", "E", "SE", "S", "SW", "W", "NW"] as const;
+
+function degToCompass(deg: number) {
+  const idx = Math.round(deg / 45) % 8;
+  return WIND_DIRS[idx];
+}
+
+// ── Weather section ──────────────────────────────────────────────────────────
+
+function WeatherSection({ weather }: { weather: HomeWeather }) {
   const label = CONDITION_LABEL[weather.state] ?? weather.state;
+  const emoji = CONDITION_EMOJI[weather.state] ?? "🌡️";
+
   return (
-    <HStack width="100%" justify="space-between" align="center">
-      <Text fontSize="3.5vw" color="gray.500" fontWeight="300">
+    <HStack width="100%" gap="4vw" align="center">
+      {/* Icon */}
+      <Text
+        fontSize="12vw"
+        lineHeight="1"
+        flexShrink={0}
+        role="img"
+        aria-label={weather.state}
+      >
+        {emoji}
+      </Text>
+
+      {/* Condition label */}
+      <Text fontSize="5vw" color="gray.200" fontWeight="300" flexShrink={0}>
         {label}
       </Text>
-      {weather.humidity != null && (
-        <Text fontSize="3vw" color="gray.700">
-          {weather.humidity}% humidity
-        </Text>
-      )}
+
+      {/* Stats pushed to the right */}
+      <HStack flex="1" gap="4vw" justify="flex-end" align="center">
+        {weather.humidity != null && (
+          <VStack align="center" gap="0.1vw">
+            <Text fontSize="2.2vw" color="gray.700" letterSpacing="0.1em">
+              HUMIDITY
+            </Text>
+            <Text fontSize="3.5vw" color="gray.400" fontWeight="300">
+              {weather.humidity}%
+            </Text>
+          </VStack>
+        )}
+        {weather.windSpeed != null && (
+          <VStack align="center" gap="0.1vw">
+            <Text fontSize="2.2vw" color="gray.700" letterSpacing="0.1em">
+              WIND
+            </Text>
+            <Text fontSize="3.5vw" color="gray.400" fontWeight="300">
+              {Math.round(weather.windSpeed)}
+              {weather.windDirection != null
+                ? ` ${degToCompass(weather.windDirection)}`
+                : " mph"}
+            </Text>
+          </VStack>
+        )}
+        {weather.pressure != null && (
+          <VStack align="center" gap="0.1vw">
+            <Text fontSize="2.2vw" color="gray.700" letterSpacing="0.1em">
+              PRESSURE
+            </Text>
+            <Text fontSize="3.5vw" color="gray.400" fontWeight="300">
+              {weather.pressure.toFixed(1)}
+            </Text>
+          </VStack>
+        )}
+      </HStack>
     </HStack>
   );
 }
@@ -195,39 +297,85 @@ function ClimateSection({ climate }: { climate: HomeClimate[] }) {
 // ── Energy ────────────────────────────────────────────────────────────────────
 
 function EnergySection({ energy }: { energy: HomeEnergy }) {
-  const { currentProduction, currentConsumption, productionToday, consumptionToday } = energy;
-  const pct = consumptionToday > 0 ? (productionToday / consumptionToday) * 100 : 0;
-  const pctColor = pct >= 100 ? "green.500" : pct >= 50 ? "yellow.500" : "gray.600";
+  const {
+    currentProduction,
+    currentConsumption,
+    productionToday,
+    consumptionToday,
+  } = energy;
+  const pct =
+    consumptionToday > 0 ? (productionToday / consumptionToday) * 100 : 0;
+  const pctColor =
+    pct >= 100 ? "green.500" : pct >= 50 ? "yellow.500" : "gray.600";
 
   return (
     <Box width="100%">
       <Text fontSize="2.2vw" color="gray.700" letterSpacing="0.14em" mb="1.2vw">
         ENERGY
       </Text>
-      <HStack width="100%" justify="space-between" align="baseline">
+      <HStack width="100%" justify="space-between" align="flex-start">
         {/* Live */}
         <VStack align="flex-start" gap="0.2vw">
-          <Text fontSize="2.2vw" color="gray.700" letterSpacing="0.1em">NOW</Text>
+          <Text fontSize="2.2vw" color="gray.700" letterSpacing="0.1em">
+            NOW
+          </Text>
           <HStack align="baseline" gap="1.5vw">
-            <Text fontSize="4.5vw" color="yellow.500" fontWeight="300" lineHeight="1">
+            <Text fontSize="3vw" lineHeight="1">
+              ☀️
+            </Text>
+            <Text
+              fontSize="4.5vw"
+              color="yellow.500"
+              fontWeight="300"
+              lineHeight="1"
+            >
               {fmtW(currentProduction)}
             </Text>
-            <Text fontSize="3vw" color="gray.600">↑</Text>
-            <Text fontSize="4.5vw" color="gray.400" fontWeight="300" lineHeight="1">
+            <Text fontSize="3vw" lineHeight="1">
+              ⚡
+            </Text>
+            <Text
+              fontSize="4.5vw"
+              color="gray.400"
+              fontWeight="300"
+              lineHeight="1"
+            >
               {fmtW(currentConsumption)}
             </Text>
-            <Text fontSize="3vw" color="gray.600">↓</Text>
           </HStack>
         </VStack>
 
-        {/* Today */}
+        {/* Today totals */}
         <VStack align="flex-end" gap="0.2vw">
-          <Text fontSize="2.2vw" color="gray.700" letterSpacing="0.1em">TODAY</Text>
-          <HStack align="baseline" gap="1vw">
-            <Text fontSize="4.5vw" color="yellow.600" fontWeight="300" lineHeight="1">
+          <Text fontSize="2.2vw" color="gray.700" letterSpacing="0.1em">
+            TODAY
+          </Text>
+          <HStack align="baseline" gap="1.5vw">
+            <Text fontSize="3vw" lineHeight="1">
+              ☀️
+            </Text>
+            <Text
+              fontSize="4.5vw"
+              color="yellow.600"
+              fontWeight="300"
+              lineHeight="1"
+            >
               {fmtKwh(productionToday)}
             </Text>
-            <Text fontSize="2.5vw" color="gray.600">kWh</Text>
+            <Text fontSize="3vw" lineHeight="1">
+              ⚡
+            </Text>
+            <Text
+              fontSize="4.5vw"
+              color="gray.400"
+              fontWeight="300"
+              lineHeight="1"
+            >
+              {fmtKwh(consumptionToday)}
+            </Text>
+            <Text fontSize="2.5vw" color="gray.600">
+              kWh
+            </Text>
             <Text fontSize="3vw" color={pctColor} fontWeight="400">
               ({Math.round(pct)}%)
             </Text>
@@ -265,7 +413,12 @@ function PrinterSection({ printer }: { printer: HomePrinter }) {
           {printer.taskName ?? "—"}
         </Text>
         <HStack align="baseline" gap="4vw">
-          <Text fontSize="4.5vw" color="green.500" fontWeight="300" lineHeight="1">
+          <Text
+            fontSize="4.5vw"
+            color="green.500"
+            fontWeight="300"
+            lineHeight="1"
+          >
             {Math.round(printer.progress)}%
           </Text>
           <Text fontSize="3.5vw" color="gray.500" fontWeight="300">
@@ -289,8 +442,12 @@ function PeopleSection({ people }: { people: HomePerson[] }) {
             <Text fontSize="3.2vw" color="gray.600" fontWeight="400">
               {person.name}
             </Text>
-            <Text fontSize="3vw" color={isHome ? "green.600" : "gray.700"} fontWeight="300">
-              {isHome ? "home" : person.state}
+            <Text
+              fontSize="3vw"
+              color={isHome ? "green.600" : "gray.700"}
+              fontWeight="300"
+            >
+              {isHome ? "home" : "away"}
             </Text>
           </HStack>
         );
@@ -306,16 +463,34 @@ export function HomeOverview() {
 
   if (isPending) {
     return (
-      <Box width="100vw" height="100vh" bg="black" display="flex" alignItems="center" justifyContent="center">
-        <Text fontSize="3vw" color="gray.800" letterSpacing="0.12em">loading</Text>
+      <Box
+        width="100vw"
+        height="100vh"
+        bg="black"
+        display="flex"
+        alignItems="center"
+        justifyContent="center"
+      >
+        <Text fontSize="3vw" color="gray.800" letterSpacing="0.12em">
+          loading
+        </Text>
       </Box>
     );
   }
 
   if (isError || !data) {
     return (
-      <Box width="100vw" height="100vh" bg="black" display="flex" alignItems="center" justifyContent="center">
-        <Text fontSize="3vw" color="gray.800">unavailable</Text>
+      <Box
+        width="100vw"
+        height="100vh"
+        bg="black"
+        display="flex"
+        alignItems="center"
+        justifyContent="center"
+      >
+        <Text fontSize="3vw" color="gray.800">
+          unavailable
+        </Text>
       </Box>
     );
   }
@@ -341,7 +516,7 @@ export function HomeOverview() {
 
       <Divider />
 
-      {data.weather && <WeatherRow weather={data.weather} />}
+      {data.weather && <WeatherSection weather={data.weather} />}
 
       <Divider />
 

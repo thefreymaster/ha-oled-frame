@@ -14,7 +14,7 @@ import photosRouter from "./routes/photos.js";
 import viewsRouter from "./routes/views.js";
 import videosRouter from "./routes/videos.js";
 import energyRouter from "./routes/energy.js";
-import homeRouter from "./routes/home.js";
+import homeRouter, { fetchHomeData } from "./routes/home.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -68,4 +68,14 @@ app.get("/{*path}", (_req, res) => {
 httpServer.listen(PORT, () => {
   console.log(`OLED Dashboard server running on port ${PORT}`);
   startMotionWatcher(io);
+
+  // Poll HA every 10s and push home data to all clients via Socket.IO
+  setInterval(async () => {
+    try {
+      const data = await fetchHomeData();
+      io.emit("home_update", data);
+    } catch (err) {
+      console.error("Home broadcast error:", err.message);
+    }
+  }, 10_000);
 });

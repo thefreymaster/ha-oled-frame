@@ -5,7 +5,6 @@ import { useSocket } from "../hooks/useSocket";
 import { socket } from "../lib/socket";
 
 const VIEWS = [
-  { path: "/clock", label: "Clock & Weather" },
   { path: "/home", label: "Home Overview" },
   { path: "/photos", label: "Photo Slideshow" },
   { path: "/blank", label: "Blank Screen" },
@@ -36,7 +35,12 @@ export function Mobile() {
     >
       {/* Header */}
       <HStack justify="space-between" align="baseline" mb="8vw">
-        <Text fontSize="5vw" color="gray.400" fontWeight="300" letterSpacing="0.02em">
+        <Text
+          fontSize="5vw"
+          color="gray.400"
+          fontWeight="300"
+          letterSpacing="0.02em"
+        >
           Control
         </Text>
         <HStack gap="1.5vw" align="center">
@@ -79,7 +83,12 @@ export function Mobile() {
                 </Text>
                 <HStack gap="3vw" align="center">
                   {isActive && (
-                    <Box width="5px" height="5px" borderRadius="full" bg="white" />
+                    <Box
+                      width="5px"
+                      height="5px"
+                      borderRadius="full"
+                      bg="white"
+                    />
                   )}
                   {isPhotos && (
                     <Box
