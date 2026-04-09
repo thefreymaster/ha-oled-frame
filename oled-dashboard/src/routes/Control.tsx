@@ -1,11 +1,13 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Box, Text, HStack, VStack } from "@chakra-ui/react";
 import { MdSkipNext } from "react-icons/md";
 import { useSocket } from "../hooks/useSocket";
 import { socket } from "../lib/socket";
 
 const VIEWS = [
-  { path: "/home", label: "Home Overview" },
+  { path: "/home", label: "Overview" },
+  { path: "/clock", label: "Analog Clock" },
+  { path: "/digital", label: "Digital Clock" },
   { path: "/photos", label: "Photo Slideshow" },
   { path: "/blank", label: "Blank Screen" },
 ];
@@ -14,9 +16,24 @@ function nextPhoto() {
   socket.emit("next_photo");
 }
 
-export function Mobile() {
+export function Control() {
   const { connected } = useSocket();
   const [activeView, setActiveView] = useState<string | null>(null);
+
+  useEffect(() => {
+    function onCurrentView(view: string) {
+      setActiveView(`/${view}`);
+    }
+    function onChangeView(view: string) {
+      setActiveView(`/${view}`);
+    }
+    socket.on("current_view", onCurrentView);
+    socket.on("change_view", onChangeView);
+    return () => {
+      socket.off("current_view", onCurrentView);
+      socket.off("change_view", onChangeView);
+    };
+  }, []);
 
   function changeView(path: string) {
     socket.emit("change", path.replace("/", ""));
@@ -27,7 +44,7 @@ export function Mobile() {
     <Box
       width="100vw"
       minHeight="100vh"
-      bg="black"
+      bg="#000"
       px="8vw"
       py="12vw"
       display="flex"

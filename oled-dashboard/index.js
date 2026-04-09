@@ -33,10 +33,14 @@ const io = new Server(httpServer, {
 
 // Make io available to route handlers via app.locals
 app.locals.io = io;
+io.currentView = "clock";
 
 io.on("connection", (socket) => {
+  socket.emit("current_view", io.currentView);
+
   socket.on("change", (view) => {
     console.log({ io: "change", view });
+    io.currentView = view;
     socket.broadcast.emit("change_view", view);
   });
 

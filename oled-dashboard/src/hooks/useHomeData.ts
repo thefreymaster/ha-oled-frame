@@ -39,12 +39,29 @@ export interface HomeEnergy {
   consumptionToday: number;
 }
 
+export interface HomeCalendarEvent {
+  summary: string;
+  start: string | null;
+  end: string | null;
+  allDay: boolean;
+  calendar: string;
+}
+
+export interface HomeInternet {
+  connected: boolean;
+}
+
 export interface HomeData {
   weather: HomeWeather | null;
   climate: HomeClimate[];
   people: HomePerson[];
   printer: HomePrinter;
   energy: HomeEnergy;
+  calendar: {
+    today: HomeCalendarEvent[];
+    tomorrow: HomeCalendarEvent[];
+  };
+  internet: HomeInternet;
 }
 
 async function fetchHome(): Promise<HomeData> {
