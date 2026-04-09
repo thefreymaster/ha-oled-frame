@@ -1,3 +1,11 @@
+FROM node:20-alpine AS builder
+WORKDIR /app
+COPY package*.json ./
+RUN npm install
+COPY . .
+ENV NODE_OPTIONS="--max-old-space-size=256"
+RUN npm run build
+
 FROM node:20-alpine
 LABEL \
     io.hass.name="OLED Dashboard" \
@@ -8,7 +16,7 @@ LABEL \
 WORKDIR /app
 COPY package*.json ./
 RUN npm install --omit=dev
-COPY dist ./dist
+COPY --from=builder /app/dist ./dist
 COPY index.js config.js openapi.js ha-motion.js ./
 COPY routes ./routes
 
