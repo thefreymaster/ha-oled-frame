@@ -612,10 +612,10 @@ export function HomeOverview() {
       display="flex"
       flexDirection={isLandscape ? "row" : "column"}
       alignItems={isLandscape ? "flex-start" : "center"}
-      justifyContent="flex-start"
+      justifyContent={isLandscape ? "flex-start" : "space-evenly"}
       px={isLandscape ? "3vmin" : "6vmin"}
       py="4vh"
-      gap={isLandscape ? "4vmin" : "2vmin"}
+      gap={isLandscape ? "4vmin" : "0"}
     >
       {isLandscape ? (
         <>

@@ -51,6 +51,22 @@ export function Control() {
       display="flex"
       flexDirection="column"
     >
+      {/* Use as frame */}
+      <Text
+        fontSize="3.5vmin"
+        color="gray.700"
+        cursor="pointer"
+        _active={{ opacity: 0.5 }}
+        mb="4.5vmin"
+        onClick={() => {
+          setDeviceMode("frame");
+          window.location.href = "/home";
+        }}
+      >
+        Use as display frame
+      </Text>
+      <Box height="1px" bg="gray.900" mb="8vmin" />
+
       {/* Header */}
       <HStack justify="space-between" align="baseline" mb="8vmin">
         <Text
@@ -131,22 +147,6 @@ export function Control() {
         })}
       </VStack>
 
-      {/* Switch to frame mode */}
-      <Box mt="auto" pt="8vmin">
-        <Box height="1px" bg="gray.900" mb="4.5vmin" />
-        <Text
-          fontSize="3.5vmin"
-          color="gray.700"
-          cursor="pointer"
-          _active={{ opacity: 0.5 }}
-          onClick={() => {
-            setDeviceMode("frame");
-            window.location.href = "/home";
-          }}
-        >
-          Use as display frame
-        </Text>
-      </Box>
     </Box>
   );
 }

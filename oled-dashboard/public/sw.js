@@ -1,4 +1,4 @@
-const CACHE = "oled-dashboard-v1";
+const CACHE = "oled-dashboard-v2";
 const PRECACHE = ["/", "/clock", "/blank", "/photos", "/control"];
 
 self.addEventListener("install", (e) => {
@@ -16,8 +16,8 @@ self.addEventListener("activate", (e) => {
 });
 
 self.addEventListener("fetch", (e) => {
-  // API and socket requests always go to network
-  if (e.request.url.includes("/api/") || e.request.url.includes("/socket.io/")) return;
+  // API, socket, and manifest requests always go to network
+  if (e.request.url.includes("/api/") || e.request.url.includes("/socket.io/") || e.request.url.includes("manifest.json")) return;
 
   // For navigations: network first, fall back to cache
   if (e.request.mode === "navigate") {
