@@ -52,21 +52,27 @@ export function Control() {
 
   return (
     <Box
-      width="100vw"
+      width="100%"
       minHeight="100vh"
-      bg="#000"
-      px="8vmin"
-      py="12vmin"
+      bg="var(--theme-bg)"
       display="flex"
-      flexDirection="column"
+      justifyContent="center"
     >
+      <Box
+        width="100%"
+        maxWidth="560px"
+        px="min(8vmin, 40px)"
+        py="min(12vmin, 56px)"
+        display="flex"
+        flexDirection="column"
+      >
       {/* Use as frame */}
       <Text
-        fontSize="3.5vmin"
-        color="gray.700"
+        fontSize="min(3.5vmin, 15px)"
+        color="var(--theme-fg-faint)"
         cursor="pointer"
         _active={{ opacity: 0.5 }}
-        mb="4.5vmin"
+        mb="min(4.5vmin, 20px)"
         onClick={() => {
           setDeviceMode("frame");
           window.location.href = "/home";
@@ -74,26 +80,26 @@ export function Control() {
       >
         Use as display frame
       </Text>
-      <Box height="1px" bg="gray.900" mb="8vmin" />
+      <Box height="1px" bg="var(--theme-divider)" mb="min(8vmin, 36px)" />
 
       {/* Header */}
-      <HStack justify="space-between" align="baseline" mb="8vmin">
+      <HStack justify="space-between" align="baseline" mb="min(8vmin, 36px)">
         <Text
-          fontSize="5vmin"
-          color="gray.400"
+          fontSize="min(5vmin, 28px)"
+          color="var(--theme-fg)"
           fontWeight="300"
           letterSpacing="0.02em"
         >
           Control
         </Text>
-        <HStack gap="1.5vmin" align="center">
+        <HStack gap="min(1.5vmin, 8px)" align="center">
           <Box
             width="5px"
             height="5px"
             borderRadius="full"
-            bg={connected ? "green.700" : "gray.800"}
+            bg={connected ? "green.700" : "var(--theme-fg-faint)"}
           />
-          <Text fontSize="3vmin" color="gray.700">
+          <Text fontSize="min(3vmin, 13px)" color="var(--theme-fg-faint)">
             {connected ? "connected" : "disconnected"}
           </Text>
         </HStack>
@@ -107,30 +113,30 @@ export function Control() {
 
           return (
             <Box key={v.path}>
-              {i > 0 && <Box height="1px" bg="gray.900" />}
+              {i > 0 && <Box height="1px" bg="var(--theme-divider)" />}
               <HStack
                 justify="space-between"
                 align="center"
-                py="4.5vmin"
+                py="min(4.5vmin, 20px)"
                 cursor="pointer"
                 onClick={() => changeView(v.path)}
                 _active={{ opacity: 0.5 }}
               >
                 <Text
-                  fontSize="4.5vmin"
+                  fontSize="min(4.5vmin, 22px)"
                   fontWeight={isActive ? "400" : "300"}
-                  color={isActive ? "white" : "gray.500"}
+                  color={isActive ? "var(--theme-fg)" : "var(--theme-fg-dim)"}
                   letterSpacing="0.01em"
                 >
                   {v.label}
                 </Text>
-                <HStack gap="3vmin" align="center">
+                <HStack gap="min(3vmin, 14px)" align="center">
                   {isActive && (
                     <Box
                       width="5px"
                       height="5px"
                       borderRadius="full"
-                      bg="white"
+                      bg="var(--theme-fg)"
                     />
                   )}
                   {isPhotos && (
@@ -140,11 +146,11 @@ export function Control() {
                         e.stopPropagation();
                         nextPhoto();
                       }}
-                      color="gray.700"
-                      _hover={{ color: "gray.400" }}
+                      color="var(--theme-fg-faint)"
+                      _hover={{ color: "var(--theme-fg)" }}
                       display="flex"
                       alignItems="center"
-                      p="1vmin"
+                      p="min(1vmin, 6px)"
                     >
                       <MdSkipNext size={20} />
                     </Box>
@@ -157,23 +163,23 @@ export function Control() {
       </VStack>
 
       {/* Display mode */}
-      <Box mt="10vmin">
-        <HStack justify="space-between" align="baseline" mb="3vmin">
+      <Box mt="min(10vmin, 48px)">
+        <HStack justify="space-between" align="baseline" mb="min(3vmin, 14px)">
           <Text
-            fontSize="3.2vmin"
-            color="gray.600"
+            fontSize="min(3.2vmin, 14px)"
+            color="var(--theme-fg-muted)"
             letterSpacing="0.12em"
             textTransform="uppercase"
           >
             Display mode
           </Text>
           {preference === "auto" && (
-            <Text fontSize="2.8vmin" color="gray.700">
+            <Text fontSize="min(2.8vmin, 13px)" color="var(--theme-fg-faint)">
               auto · {effectiveMode}
             </Text>
           )}
         </HStack>
-        <HStack gap="2vmin" width="100%">
+        <HStack gap="min(2vmin, 10px)" width="100%">
           {THEME_MODES.map((m) => {
             const isActive = preference === m.value;
             return (
@@ -181,18 +187,18 @@ export function Control() {
                 key={m.value}
                 as="button"
                 flex="1"
-                py="3.5vmin"
+                py="min(3.5vmin, 16px)"
                 borderRadius="8px"
-                bg={isActive ? "whiteAlpha.100" : "transparent"}
+                bg="transparent"
                 border="1px solid"
-                borderColor={isActive ? "gray.700" : "gray.900"}
+                borderColor={isActive ? "var(--theme-fg-dim)" : "var(--theme-divider)"}
                 onClick={() => setPreference(m.value)}
                 _active={{ opacity: 0.5 }}
               >
                 <Text
-                  fontSize="3.6vmin"
+                  fontSize="min(3.6vmin, 16px)"
                   fontWeight={isActive ? "400" : "300"}
-                  color={isActive ? "white" : "gray.500"}
+                  color={isActive ? "var(--theme-fg)" : "var(--theme-fg-dim)"}
                   letterSpacing="0.02em"
                 >
                   {m.label}
@@ -202,7 +208,7 @@ export function Control() {
           })}
         </HStack>
       </Box>
-
+      </Box>
     </Box>
   );
 }

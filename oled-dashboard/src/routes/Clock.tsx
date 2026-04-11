@@ -109,7 +109,7 @@ function AnalogClock() {
             y1={CY}
             x2={CX}
             y2={CY - 52}
-            stroke="white"
+            style={{ stroke: "var(--theme-fg)" }}
             strokeWidth={3.5}
             strokeLinecap="round"
           />
@@ -121,7 +121,7 @@ function AnalogClock() {
             y1={CY}
             x2={CX}
             y2={CY - 72}
-            stroke="white"
+            style={{ stroke: "var(--theme-fg)" }}
             strokeWidth={2}
             strokeLinecap="round"
           />
@@ -151,7 +151,7 @@ function AnalogClock() {
           />
 
           {/* Center dot */}
-          <circle cx={CX} cy={CY} r={3.5} fill="white" />
+          <circle cx={CX} cy={CY} r={3.5} style={{ fill: "var(--theme-fg)" }} />
           <circle cx={CX} cy={CY} r={1.8} fill="#c53030" />
         </svg>
       </Box>
@@ -166,7 +166,7 @@ export function Clock() {
     <Box
       width="100%"
       height="100vh"
-      bg="#000"
+      bg="var(--theme-bg)"
       overflow="hidden"
       display="flex"
       alignItems="center"

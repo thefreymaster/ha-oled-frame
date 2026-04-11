@@ -180,12 +180,12 @@ export function Photos() {
       <Box
         width="100%"
         height="100vh"
-        bg="#000"
+        bg="var(--theme-bg)"
         display="flex"
         alignItems="center"
         justifyContent="center"
       >
-        <Spinner size="lg" color="gray.600" />
+        <Spinner size="lg" color="var(--theme-fg-muted)" />
       </Box>
     );
   }
@@ -195,12 +195,12 @@ export function Photos() {
       <Box
         width="100%"
         height="100vh"
-        bg="#000"
+        bg="var(--theme-bg)"
         display="flex"
         alignItems="center"
         justifyContent="center"
       >
-        <Text color="gray.700" fontSize="sm">
+        <Text color="var(--theme-fg-faint)" fontSize="sm">
           no album configured
         </Text>
       </Box>
@@ -211,7 +211,7 @@ export function Photos() {
     <Box
       width="100%"
       height="100vh"
-      bg="#000"
+      bg="var(--theme-bg)"
       position="relative"
       overflow="hidden"
     >
@@ -223,7 +223,7 @@ export function Photos() {
           alignItems="center"
           justifyContent="center"
         >
-          <Spinner size="lg" color="gray.600" />
+          <Spinner size="lg" color="var(--theme-fg-muted)" />
         </Box>
       )}
 

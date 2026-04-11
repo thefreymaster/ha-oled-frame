@@ -11,8 +11,8 @@ body,
 #root {
   width: 100%;
   height: 100%;
-  background-color: #000000;
-  color: #888888;
+  background-color: var(--theme-bg, #000000);
+  color: var(--theme-fg, #888888);
   font-family: "Inter", sans-serif;
   overflow: hidden;
 }

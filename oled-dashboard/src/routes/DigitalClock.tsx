@@ -46,7 +46,7 @@ export function DigitalClock() {
     <Box
       width="100%"
       height="100vh"
-      bg="#000"
+      bg="var(--theme-bg)"
       overflow="hidden"
       display="flex"
       flexDirection="column"

@@ -12,7 +12,7 @@ export function Layout() {
   const location = useLocation();
   const isControl = location.pathname === "/control";
   const isBlank = location.pathname === "/blank";
-  const showNav = !isControl && !isBlank;
+  const showNav = !isBlank;
 
   const content = (
     <PageTransition key={location.pathname}>

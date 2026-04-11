@@ -571,12 +571,12 @@ export function HomeOverview() {
       <Box
         width="100%"
         height="100vh"
-        bg="#000"
+        bg="var(--theme-bg)"
         display="flex"
         alignItems="center"
         justifyContent="center"
       >
-        <Text fontSize="3vmin" color="gray.800" letterSpacing="0.12em">
+        <Text fontSize="3vmin" color="var(--theme-fg-faint)" letterSpacing="0.12em">
           loading
         </Text>
       </Box>
@@ -588,12 +588,12 @@ export function HomeOverview() {
       <Box
         width="100%"
         height="100vh"
-        bg="#000"
+        bg="var(--theme-bg)"
         display="flex"
         alignItems="center"
         justifyContent="center"
       >
-        <Text fontSize="3vmin" color="gray.800">
+        <Text fontSize="3vmin" color="var(--theme-fg-faint)">
           unavailable
         </Text>
       </Box>
@@ -612,7 +612,7 @@ export function HomeOverview() {
     <Box
       width="100%"
       height="100vh"
-      bg="#000"
+      bg="var(--theme-bg)"
       overflow="hidden"
       display="flex"
       flexDirection={isLandscape ? "row" : "column"}

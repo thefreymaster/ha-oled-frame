@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
-import { Box, VStack } from "@chakra-ui/react";
+import { Box, VStack, Spacer, Flex } from "@chakra-ui/react";
 import { useLocation, useNavigate } from "react-router";
-import { MdHome, MdPin, MdPhoto } from "react-icons/md";
+import { MdHome, MdPin, MdPhoto, MdTune } from "react-icons/md";
 import { BsClockFill } from "react-icons/bs";
 import { socket } from "../lib/socket";
 
@@ -10,6 +10,10 @@ const NAV_ITEMS = [
   { path: "/clock", icon: BsClockFill },
   { path: "/digital", icon: MdPin },
   { path: "/photos", icon: MdPhoto },
+];
+
+const BOTTOM_NAV_ITEMS = [
+  { path: "/control", icon: MdTune },
 ];
 
 export function LandscapeNav() {
@@ -33,8 +37,36 @@ export function LandscapeNav() {
 
   function handleClick(path: string) {
     navigate(path);
-    socket.emit("change", path.replace("/", ""));
+    // /control is the local controller UI — do not cast it to other displays.
+    if (path !== "/control") {
+      socket.emit("change", path.replace("/", ""));
+    }
     setActiveView(path);
+  }
+
+  function renderItem(item: { path: string; icon: typeof MdHome }) {
+    const isActive = activeView === item.path;
+    const Icon = item.icon;
+    return (
+      <Box
+        key={item.path}
+        as="button"
+        onClick={() => handleClick(item.path)}
+        display="flex"
+        alignItems="center"
+        justifyContent="center"
+        width="40px"
+        height="40px"
+        borderRadius="8px"
+        bg="transparent"
+        color={isActive ? "var(--theme-fg)" : "var(--theme-fg-muted)"}
+        _hover={{ color: "var(--theme-fg)" }}
+        _active={{ opacity: 0.5 }}
+        transition="all 0.15s"
+      >
+        <Icon size={22} />
+      </Box>
+    );
   }
 
   return (
@@ -44,40 +76,27 @@ export function LandscapeNav() {
       top={0}
       bottom={0}
       width="56px"
-      bg="#000"
+      bg="var(--theme-bg)"
       borderRight="1px solid"
       borderColor="var(--theme-divider)"
-      display="flex"
-      alignItems="center"
-      justifyContent="center"
       zIndex={100}
     >
-      <VStack gap="6px">
-        {NAV_ITEMS.map((item) => {
-          const isActive = activeView === item.path;
-          const Icon = item.icon;
-          return (
-            <Box
-              key={item.path}
-              as="button"
-              onClick={() => handleClick(item.path)}
-              display="flex"
-              alignItems="center"
-              justifyContent="center"
-              width="40px"
-              height="40px"
-              borderRadius="8px"
-              bg={isActive ? "whiteAlpha.100" : "transparent"}
-              color={isActive ? "var(--theme-fg)" : "var(--theme-fg-muted)"}
-              _hover={{ color: "var(--theme-fg)" }}
-              _active={{ opacity: 0.5 }}
-              transition="all 0.15s"
-            >
-              <Icon size={22} />
-            </Box>
-          );
-        })}
-      </VStack>
+      <Flex
+        direction="column"
+        align="center"
+        justify="center"
+        height="100%"
+        py="16px"
+      >
+        <Spacer />
+        <VStack gap="6px">
+          {NAV_ITEMS.map(renderItem)}
+        </VStack>
+        <Spacer />
+        <VStack gap="6px">
+          {BOTTOM_NAV_ITEMS.map(renderItem)}
+        </VStack>
+      </Flex>
     </Box>
   );
 }

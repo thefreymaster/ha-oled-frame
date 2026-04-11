@@ -12,6 +12,7 @@ const DAYLIGHT_END_HOUR = 19;
 type ThemeVars = Record<string, string>;
 
 const DARK_VARS: ThemeVars = {
+  "--theme-bg": "#000000",
   "--theme-fg": "#A0AEC0", // gray.400
   "--theme-fg-dim": "#718096", // gray.500
   "--theme-fg-muted": "#4A5568", // gray.600
@@ -23,15 +24,17 @@ const DARK_VARS: ThemeVars = {
   "--theme-icon-opacity": "0.35",
 };
 
+// Bright mode is a true inverse: white background, dark text.
 const BRIGHT_VARS: ThemeVars = {
-  "--theme-fg": "#FFFFFF",
-  "--theme-fg-dim": "#E2E8F0", // gray.200
-  "--theme-fg-muted": "#A0AEC0", // gray.400
+  "--theme-bg": "#FFFFFF",
+  "--theme-fg": "#1A202C", // gray.800
+  "--theme-fg-dim": "#2D3748", // gray.700
+  "--theme-fg-muted": "#4A5568", // gray.600
   "--theme-fg-faint": "#718096", // gray.500
-  "--theme-divider": "#2D3748", // gray.700
-  "--theme-marker-cardinal": "#CBD5E0",
+  "--theme-divider": "#CBD5E0", // gray.300
+  "--theme-marker-cardinal": "#2D3748",
   "--theme-marker-hour": "#718096",
-  "--theme-marker-minor": "#4A5568",
+  "--theme-marker-minor": "#CBD5E0",
   "--theme-icon-opacity": "1",
 };
 
