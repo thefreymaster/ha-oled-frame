@@ -32,3 +32,4 @@ export const HA_TOKEN = get("ha_token", "HA_TOKEN", "");
 export const IMMICH_URL = get("immich_url", "IMMICH_URL", "");
 export const IMMICH_API_KEY = get("immich_api_key", "IMMICH_API_KEY", "");
 export const PORT = Number(get("port", "PORT", "4000"));
+export const SCREEN_TYPE = get("screen_type", "SCREEN_TYPE", "oled");

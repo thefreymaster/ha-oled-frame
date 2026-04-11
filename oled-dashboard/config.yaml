@@ -20,9 +20,11 @@ options:
   immich_url: ""
   immich_api_key: ""
   port: 4000
+  screen_type: "oled"
 schema:
   ha_url: str
   ha_token: str
   immich_url: str
   immich_api_key: str
   port: int
+  screen_type: str

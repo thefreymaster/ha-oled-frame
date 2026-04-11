@@ -5,14 +5,16 @@ import { PageTransition } from "./PageTransition";
 import { PixelShift } from "./PixelShift";
 import { LandscapeNav } from "./LandscapeNav";
 import { useThemeMode } from "../hooks/useThemeMode";
+import { useScreenType } from "../hooks/useScreenType";
 
 export function Layout() {
-  // Drives the auto-mode timer and keeps theme state in sync app-wide.
   useThemeMode();
   const location = useLocation();
+  const screenType = useScreenType();
   const isControl = location.pathname === "/control";
   const isBlank = location.pathname === "/blank";
   const showNav = !isBlank;
+  const isOled = screenType === "oled";
 
   const content = (
     <PageTransition key={location.pathname}>
@@ -23,18 +25,7 @@ export function Layout() {
   return (
     <>
       <SocketViewListener />
-      {showNav && (
-        <Box
-          display="none"
-          css={{
-            "@media (orientation: landscape)": {
-              display: "block",
-            },
-          }}
-        >
-          <LandscapeNav />
-        </Box>
-      )}
+      {showNav && <LandscapeNav />}
       <Box
         overflow="hidden"
         css={
@@ -44,11 +35,14 @@ export function Layout() {
                   marginLeft: "56px",
                   width: "calc(100vw - 56px)",
                 },
+                "@media (orientation: portrait)": {
+                  paddingBottom: "56px",
+                },
               }
             : undefined
         }
       >
-        {isControl ? content : <PixelShift>{content}</PixelShift>}
+        {isControl || !isOled ? content : <PixelShift>{content}</PixelShift>}
       </Box>
     </>
   );
