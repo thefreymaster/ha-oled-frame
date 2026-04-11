@@ -13,7 +13,7 @@ import { HA_URL, HA_TOKEN } from "./config.js";
 
 const MOTION_ENTITY = "binary_sensor.kitchen_motion_sensor_motion";
 const ROUTE_ENTITY = "input_select.oledos_route";
-const ALBUM_ENTITY = "input_select.oled_album";
+const ALBUM_ENTITY = "input_select.smart_frame_album";
 const BLANK_TIMEOUT_MS = 5 * 60 * 1000;
 const RECONNECT_DELAY_MS = 5_000;
 

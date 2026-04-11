@@ -3,7 +3,7 @@ import { IMMICH_URL, IMMICH_API_KEY, HA_URL, HA_TOKEN } from "../config.js";
 
 const router = Router();
 
-const ALBUM_ENTITY = "input_select.oled_album";
+const ALBUM_ENTITY = "input_select.smart_frame_album";
 
 router.get("/config", async (_req, res) => {
   if (!HA_TOKEN) {
@@ -12,15 +12,12 @@ router.get("/config", async (_req, res) => {
   }
 
   try {
-    const response = await fetch(
-      `${HA_URL}/api/states/${ALBUM_ENTITY}`,
-      {
-        headers: {
-          Authorization: `Bearer ${HA_TOKEN}`,
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    const response = await fetch(`${HA_URL}/api/states/${ALBUM_ENTITY}`, {
+      headers: {
+        Authorization: `Bearer ${HA_TOKEN}`,
+        "Content-Type": "application/json",
+      },
+    });
     if (!response.ok) {
       res.status(502).json({ error: `HA responded with ${response.status}` });
       return;
@@ -59,7 +56,9 @@ router.get("/albums", async (_req, res) => {
       headers: immichHeaders(),
     });
     if (!response.ok) {
-      res.status(502).json({ error: `Immich responded with ${response.status}` });
+      res
+        .status(502)
+        .json({ error: `Immich responded with ${response.status}` });
       return;
     }
     const albums = await response.json();
@@ -69,7 +68,7 @@ router.get("/albums", async (_req, res) => {
         albumName: a.albumName,
         assetCount: a.assetCount,
         thumbnailAssetId: a.albumThumbnailAssetId,
-      }))
+      })),
     );
   } catch (err) {
     console.error("Immich albums error:", err);
@@ -83,10 +82,12 @@ router.get("/albums/:albumId", async (req, res) => {
   try {
     const response = await fetch(
       `${IMMICH_URL}/api/albums/${req.params.albumId}`,
-      { headers: immichHeaders() }
+      { headers: immichHeaders() },
     );
     if (!response.ok) {
-      res.status(502).json({ error: `Immich responded with ${response.status}` });
+      res
+        .status(502)
+        .json({ error: `Immich responded with ${response.status}` });
       return;
     }
     const album = await response.json();
@@ -113,10 +114,12 @@ router.get("/asset/:assetId/thumbnail", async (req, res) => {
   try {
     const response = await fetch(
       `${IMMICH_URL}/api/assets/${req.params.assetId}/thumbnail?size=preview`,
-      { headers: { "x-api-key": IMMICH_API_KEY } }
+      { headers: { "x-api-key": IMMICH_API_KEY } },
     );
     if (!response.ok) {
-      res.status(502).json({ error: `Immich responded with ${response.status}` });
+      res
+        .status(502)
+        .json({ error: `Immich responded with ${response.status}` });
       return;
     }
     const contentType = response.headers.get("content-type") ?? "image/jpeg";

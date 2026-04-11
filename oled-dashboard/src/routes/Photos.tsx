@@ -103,7 +103,7 @@ export function Photos() {
   const { data: album, isPending: photosPending } =
     useAlbumPhotos(activeAlbumId);
 
-  // HA fires /api/photos/refresh when input_select.oled_album changes;
+  // HA fires /api/photos/refresh when input_select.smart_frame_album changes;
   // server broadcasts photos_refresh so all frames reload their album.
   useEffect(() => {
     function onRefresh() {
