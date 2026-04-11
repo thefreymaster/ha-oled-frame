@@ -38,17 +38,20 @@ async function getLastRoute() {
 export async function setLastRoute(route) {
   if (!HA_TOKEN) return;
   try {
-    const res = await fetch(`${HA_URL}/api/services/input_select/select_option`, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${HA_TOKEN}`,
-        "Content-Type": "application/json",
+    const res = await fetch(
+      `${HA_URL}/api/services/input_select/select_option`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${HA_TOKEN}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          entity_id: ROUTE_ENTITY,
+          option: route,
+        }),
       },
-      body: JSON.stringify({
-        entity_id: ROUTE_ENTITY,
-        option: route,
-      }),
-    });
+    );
     if (!res.ok) {
       console.error(`[ha-motion] failed to set ${ROUTE_ENTITY}: ${res.status}`);
     }

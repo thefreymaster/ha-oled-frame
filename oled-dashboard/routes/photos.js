@@ -1,10 +1,39 @@
 import { Router } from "express";
-import { IMMICH_URL, IMMICH_API_KEY, IMMICH_ALBUM_ID } from "../config.js";
+import { IMMICH_URL, IMMICH_API_KEY, HA_URL, HA_TOKEN } from "../config.js";
 
 const router = Router();
 
-router.get("/config", (_req, res) => {
-  res.json({ defaultAlbumId: IMMICH_ALBUM_ID || null });
+const ALBUM_ENTITY = "input_select.oled_album";
+
+router.get("/config", async (_req, res) => {
+  if (!HA_TOKEN) {
+    res.status(503).json({ error: "HA_TOKEN not configured" });
+    return;
+  }
+
+  try {
+    const response = await fetch(
+      `${HA_URL}/api/states/${ALBUM_ENTITY}`,
+      {
+        headers: {
+          Authorization: `Bearer ${HA_TOKEN}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    if (!response.ok) {
+      res.status(502).json({ error: `HA responded with ${response.status}` });
+      return;
+    }
+    const data = await response.json();
+    const value = typeof data.state === "string" ? data.state.trim() : "";
+    const defaultAlbumId =
+      value && value !== "unknown" && value !== "unavailable" ? value : null;
+    res.json({ defaultAlbumId });
+  } catch (err) {
+    console.error("HA album entity fetch error:", err);
+    res.status(500).json({ error: "Failed to fetch album entity from HA" });
+  }
 });
 
 function immichHeaders() {

@@ -1,5 +1,5 @@
 name: OLED Dashboard
-version: "1.2.6"
+version: "1.3.0"
 slug: oled_dashboard
 description: OLED-optimized home dashboard with clock, NWS weather, and Immich photo slideshow
 url: https://github.com/thefreymaster/ha-oled-frame
@@ -19,12 +19,10 @@ options:
   ha_token: ""
   immich_url: ""
   immich_api_key: ""
-  immich_album_id: ""
   port: 4000
 schema:
   ha_url: str
   ha_token: str
   immich_url: str
   immich_api_key: str
-  immich_album_id: str
   port: int

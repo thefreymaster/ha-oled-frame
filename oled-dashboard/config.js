@@ -31,5 +31,4 @@ export const HA_URL = get("ha_url", "HA_URL", "http://supervisor/core");
 export const HA_TOKEN = get("ha_token", "HA_TOKEN", "");
 export const IMMICH_URL = get("immich_url", "IMMICH_URL", "");
 export const IMMICH_API_KEY = get("immich_api_key", "IMMICH_API_KEY", "");
-export const IMMICH_ALBUM_ID = get("immich_album_id", "IMMICH_ALBUM_ID", "");
 export const PORT = Number(get("port", "PORT", "4000"));
