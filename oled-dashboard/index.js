@@ -34,9 +34,11 @@ const io = new Server(httpServer, {
 // Make io available to route handlers via app.locals
 app.locals.io = io;
 io.currentView = "clock";
+io.themeMode = "auto";
 
 io.on("connection", (socket) => {
   socket.emit("current_view", io.currentView);
+  socket.emit("current_theme_mode", io.themeMode);
 
   socket.on("change", (view) => {
     console.log({ io: "change", view });
@@ -48,6 +50,13 @@ io.on("connection", (socket) => {
   socket.on("next_photo", () => {
     console.log({ io: "next_photo" });
     socket.broadcast.emit("next_photo");
+  });
+
+  socket.on("theme_mode", (pref) => {
+    if (pref !== "auto" && pref !== "bright" && pref !== "dark") return;
+    console.log({ io: "theme_mode", pref });
+    io.themeMode = pref;
+    socket.broadcast.emit("theme_mode", pref);
   });
 });
 

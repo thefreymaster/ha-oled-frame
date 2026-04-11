@@ -14,7 +14,13 @@ function buildMarkers() {
     const isCardinal = i % 15 === 0;
     const outerR = 92;
     const innerR = isCardinal ? 78 : isHour ? 82 : 88;
-    const color = isCardinal ? "#666" : isHour ? "#444" : "#222";
+    // Use CSS variables via `style` since SVG presentation attributes
+    // do not resolve `var(...)` references.
+    const strokeVar = isCardinal
+      ? "var(--theme-marker-cardinal)"
+      : isHour
+        ? "var(--theme-marker-hour)"
+        : "var(--theme-marker-minor)";
     const width = isCardinal ? 2.2 : isHour ? 1.4 : 0.6;
     markers.push(
       <line
@@ -23,7 +29,7 @@ function buildMarkers() {
         y1={CY + Math.sin(angle) * innerR}
         x2={CX + Math.cos(angle) * outerR}
         y2={CY + Math.sin(angle) * outerR}
-        stroke={color}
+        style={{ stroke: strokeVar }}
         strokeWidth={width}
         strokeLinecap="round"
       />,

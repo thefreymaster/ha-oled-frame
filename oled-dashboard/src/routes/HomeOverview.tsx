@@ -80,9 +80,9 @@ const CONDITION_LABEL: Record<string, string> = {
 const HVAC_COLOR: Record<string, string> = {
   cool: "blue.400",
   heat: "orange.400",
-  off: "gray.800",
+  off: "var(--theme-fg-faint)",
   auto: "green.500",
-  unknown: "gray.800",
+  unknown: "var(--theme-fg-faint)",
 };
 
 function fmtKwh(n: number) {
@@ -115,7 +115,7 @@ function useIsLandscape() {
 // ── Divider ───────────────────────────────────────────────────────────────────
 
 function Divider() {
-  return <Box width="100%" height="1px" bg="gray.900" flexShrink={0} />;
+  return <Box width="100%" height="1px" bg="var(--theme-divider)" flexShrink={0} />;
 }
 
 // ── Header: date + time + temp ────────────────────────────────────────────────
@@ -141,7 +141,7 @@ function Header({ internet }: { internet: HomeInternet }) {
       <HStack align="baseline" gap="2vmin" mb="0.8vmin">
         <Text
           fontSize="3.8vmin"
-          color="gray.600"
+          color="var(--theme-fg-muted)"
           fontWeight="400"
           letterSpacing="0.02em"
         >
@@ -160,7 +160,7 @@ function Header({ internet }: { internet: HomeInternet }) {
         fontSize="18vmin"
         fontWeight="300"
         letterSpacing="-0.03em"
-        color="gray.400"
+        color="var(--theme-fg)"
         lineHeight="0.9"
       >
         {hours}:{minutes}
@@ -168,7 +168,7 @@ function Header({ internet }: { internet: HomeInternet }) {
           as="span"
           fontSize="8vmin"
           fontWeight="300"
-          color="gray.500"
+          color="var(--theme-fg-dim)"
           ml="1.5vmin"
         >
           {ampm}
@@ -219,7 +219,7 @@ function WeatherSection({ weather }: { weather: HomeWeather }) {
   return (
     <HStack width="100%" gap="4vmin" align="center">
       {/* Icon */}
-      <Box fontSize="14vmin" lineHeight="1" flexShrink={0} color="gray.500">
+      <Box fontSize="14vmin" lineHeight="1" flexShrink={0} color="var(--theme-fg-dim)">
         <Icon size="1em" />
       </Box>
 
@@ -230,7 +230,7 @@ function WeatherSection({ weather }: { weather: HomeWeather }) {
             fontSize="14vmin"
             fontWeight="300"
             letterSpacing="-0.03em"
-            color="gray.500"
+            color="var(--theme-fg-dim)"
             lineHeight="1"
             flexShrink={0}
           >
@@ -239,7 +239,7 @@ function WeatherSection({ weather }: { weather: HomeWeather }) {
         )}
 
         {/* Condition label */}
-        <Text fontSize="6vmin" color="gray.500" fontWeight="300" flexShrink={0}>
+        <Text fontSize="6vmin" color="var(--theme-fg-dim)" fontWeight="300" flexShrink={0}>
           {label}
         </Text>
       </VStack>
@@ -248,20 +248,20 @@ function WeatherSection({ weather }: { weather: HomeWeather }) {
       <VStack flex="1" gap="4vmin" justify="flex-end" align="center">
         {weather.humidity != null && (
           <VStack align="center" gap="0.3vmin">
-            <Text fontSize="2.6vmin" color="gray.700" letterSpacing="0.1em">
+            <Text fontSize="2.6vmin" color="var(--theme-fg-faint)" letterSpacing="0.1em">
               HUMIDITY
             </Text>
-            <Text fontSize="4vmin" color="gray.400" fontWeight="300">
+            <Text fontSize="4vmin" color="var(--theme-fg)" fontWeight="300">
               {weather.humidity}%
             </Text>
           </VStack>
         )}
         {weather.windSpeed != null && (
           <VStack align="center" gap="0.3vmin">
-            <Text fontSize="2.6vmin" color="gray.700" letterSpacing="0.1em">
+            <Text fontSize="2.6vmin" color="var(--theme-fg-faint)" letterSpacing="0.1em">
               WIND
             </Text>
-            <Text fontSize="4vmin" color="gray.400" fontWeight="300">
+            <Text fontSize="4vmin" color="var(--theme-fg)" fontWeight="300">
               {Math.round(weather.windSpeed)}
               {weather.windDirection != null
                 ? ` ${degToCompass(weather.windDirection)}`
@@ -278,11 +278,11 @@ function WeatherSection({ weather }: { weather: HomeWeather }) {
 
 function ClimateRow({ unit }: { unit: HomeClimate }) {
   const isOff = unit.state === "off" || unit.state === "unknown";
-  const modeColor = HVAC_COLOR[unit.state] ?? "gray.700";
+  const modeColor = HVAC_COLOR[unit.state] ?? "var(--theme-fg-faint)";
 
   return (
     <HStack justify="space-between" align="baseline" width="100%">
-      <Text fontSize="3.8vmin" color="gray.500" fontWeight="400" minW="22vmin">
+      <Text fontSize="3.8vmin" color="var(--theme-fg-dim)" fontWeight="400" minW="22vmin">
         {unit.name}
       </Text>
       <Text fontSize="3.4vmin" color={modeColor} minW="10vmin">
@@ -292,14 +292,14 @@ function ClimateRow({ unit }: { unit: HomeClimate }) {
         <HStack align="baseline" gap="1vmin" flex="1" justify="flex-end">
           <Text
             fontSize="5vmin"
-            color="gray.400"
+            color="var(--theme-fg)"
             fontWeight="300"
             lineHeight="1"
           >
             {unit.currentTemp}°
           </Text>
           {unit.targetTemp != null && (
-            <Text fontSize="3.4vmin" color="gray.700">
+            <Text fontSize="3.4vmin" color="var(--theme-fg-faint)">
               → {unit.targetTemp}°
             </Text>
           )}
@@ -316,7 +316,7 @@ function ClimateSection({ climate }: { climate: HomeClimate[] }) {
     <Box width="100%">
       <Text
         fontSize="2.6vmin"
-        color="gray.700"
+        color="var(--theme-fg-faint)"
         letterSpacing="0.14em"
         mb="1.5vmin"
       >
@@ -338,13 +338,13 @@ function EnergySection({ energy }: { energy: HomeEnergy }) {
   const pct =
     consumptionToday > 0 ? (productionToday / consumptionToday) * 100 : 0;
   const pctColor =
-    pct >= 100 ? "green.700" : pct >= 50 ? "yellow.700" : "gray.700";
+    pct >= 100 ? "green.700" : pct >= 50 ? "yellow.700" : "var(--theme-fg-faint)";
 
   return (
     <Box width="100%">
       <Text
         fontSize="2.6vmin"
-        color="gray.700"
+        color="var(--theme-fg-faint)"
         letterSpacing="0.14em"
         mb="1.5vmin"
       >
@@ -353,7 +353,7 @@ function EnergySection({ energy }: { energy: HomeEnergy }) {
       <HStack width="100%" justify="space-between" align="flex-start">
         {/* Today totals */}
         <VStack align="flex-end" gap="0.4vmin" width="100%">
-          <Text fontSize="2.6vmin" color="gray.700" letterSpacing="0.1em">
+          <Text fontSize="2.6vmin" color="var(--theme-fg-faint)" letterSpacing="0.1em">
             TODAY
           </Text>
           <HStack
@@ -374,12 +374,12 @@ function EnergySection({ energy }: { energy: HomeEnergy }) {
             >
               {fmtKwh(productionToday)} kWh
             </Text>
-            <Box fontSize="3.5vmin" lineHeight="1" color="gray.400">
+            <Box fontSize="3.5vmin" lineHeight="1" color="var(--theme-fg)">
               <IoFlash size="1em" />
             </Box>
             <Text
               fontSize="5.5vmin"
-              color="gray.400"
+              color="var(--theme-fg)"
               fontWeight="300"
               lineHeight="1"
             >
@@ -409,7 +409,7 @@ function PrinterSection({ printer }: { printer: HomePrinter }) {
     <Box width="100%">
       <Text
         fontSize="2.6vmin"
-        color="gray.700"
+        color="var(--theme-fg-faint)"
         letterSpacing="0.14em"
         mb="1.5vmin"
       >
@@ -418,7 +418,7 @@ function PrinterSection({ printer }: { printer: HomePrinter }) {
       <HStack width="100%" justify="space-between" align="baseline">
         <Text
           fontSize="3.8vmin"
-          color="gray.500"
+          color="var(--theme-fg-dim)"
           fontWeight="300"
           overflow="hidden"
           whiteSpace="nowrap"
@@ -436,7 +436,7 @@ function PrinterSection({ printer }: { printer: HomePrinter }) {
           >
             {Math.round(printer.progress)}%
           </Text>
-          <Text fontSize="4vmin" color="gray.500" fontWeight="300">
+          <Text fontSize="4vmin" color="var(--theme-fg-dim)" fontWeight="300">
             {fmtMins(printer.remainingTime)}
           </Text>
         </HStack>
@@ -454,7 +454,7 @@ function PrinterSection({ printer }: { printer: HomePrinter }) {
 //         const isHome = person.state === "home" || person.state === "Home";
 //         return (
 //           <HStack key={person.name} align="baseline" gap="1.5vmin">
-//             <Text fontSize="4vmin" color="gray.600" fontWeight="400">
+//             <Text fontSize="4vmin" color="var(--theme-fg-muted)" fontWeight="400">
 //               {person.name}
 //             </Text>
 //             <Text
@@ -495,7 +495,7 @@ function EventList({
         <HStack key={i} justify="space-between" align="baseline" width="100%">
           <Text
             fontSize="3.8vmin"
-            color="gray.400"
+            color="var(--theme-fg)"
             fontWeight="300"
             overflow="hidden"
             whiteSpace="nowrap"
@@ -507,7 +507,7 @@ function EventList({
           </Text>
           <Text
             fontSize="3.2vmin"
-            color="gray.600"
+            color="var(--theme-fg-muted)"
             fontWeight="300"
             flexShrink={0}
           >
@@ -534,7 +534,7 @@ function CalendarSection({
         <>
           <Text
             fontSize="2.6vmin"
-            color="gray.700"
+            color="var(--theme-fg-faint)"
             letterSpacing="0.14em"
             mb="1.5vmin"
           >
@@ -547,7 +547,7 @@ function CalendarSection({
         <Box mt={today.length > 0 ? "2.5vmin" : "0"}>
           <Text
             fontSize="2.6vmin"
-            color="gray.700"
+            color="var(--theme-fg-faint)"
             letterSpacing="0.14em"
             mb="1.5vmin"
           >

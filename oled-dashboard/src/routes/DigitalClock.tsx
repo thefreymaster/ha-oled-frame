@@ -57,7 +57,7 @@ export function DigitalClock() {
         fontSize="24vmin"
         fontWeight="200"
         letterSpacing="-0.03em"
-        color="gray.400"
+        color="var(--theme-fg)"
         lineHeight="1"
       >
         {hours}:{minutes}
@@ -65,7 +65,7 @@ export function DigitalClock() {
           as="span"
           fontSize="8vmin"
           fontWeight="300"
-          color="gray.500"
+          color="var(--theme-fg-dim)"
           ml="2vmin"
         >
           {ampm}
@@ -74,7 +74,7 @@ export function DigitalClock() {
 
       <Text
         fontSize="4vmin"
-        color="gray.600"
+        color="var(--theme-fg-muted)"
         fontWeight="300"
         letterSpacing="0.04em"
         mt="3vmin"

@@ -4,6 +4,8 @@ import { MdSkipNext } from "react-icons/md";
 import { useSocket } from "../hooks/useSocket";
 import { socket } from "../lib/socket";
 import { setDeviceMode } from "../lib/deviceMode";
+import { useThemeMode } from "../hooks/useThemeMode";
+import type { ThemeModePreference } from "../lib/themeMode";
 
 const VIEWS = [
   { path: "/home", label: "Overview" },
@@ -13,12 +15,19 @@ const VIEWS = [
   { path: "/blank", label: "Blank Screen" },
 ];
 
+const THEME_MODES: { value: ThemeModePreference; label: string }[] = [
+  { value: "auto", label: "Auto" },
+  { value: "bright", label: "Bright" },
+  { value: "dark", label: "Dark" },
+];
+
 function nextPhoto() {
   socket.emit("next_photo");
 }
 
 export function Control() {
   const { connected } = useSocket();
+  const { preference, effectiveMode, setPreference } = useThemeMode();
   const [activeView, setActiveView] = useState<string | null>(null);
 
   useEffect(() => {
@@ -146,6 +155,53 @@ export function Control() {
           );
         })}
       </VStack>
+
+      {/* Display mode */}
+      <Box mt="10vmin">
+        <HStack justify="space-between" align="baseline" mb="3vmin">
+          <Text
+            fontSize="3.2vmin"
+            color="gray.600"
+            letterSpacing="0.12em"
+            textTransform="uppercase"
+          >
+            Display mode
+          </Text>
+          {preference === "auto" && (
+            <Text fontSize="2.8vmin" color="gray.700">
+              auto · {effectiveMode}
+            </Text>
+          )}
+        </HStack>
+        <HStack gap="2vmin" width="100%">
+          {THEME_MODES.map((m) => {
+            const isActive = preference === m.value;
+            return (
+              <Box
+                key={m.value}
+                as="button"
+                flex="1"
+                py="3.5vmin"
+                borderRadius="8px"
+                bg={isActive ? "whiteAlpha.100" : "transparent"}
+                border="1px solid"
+                borderColor={isActive ? "gray.700" : "gray.900"}
+                onClick={() => setPreference(m.value)}
+                _active={{ opacity: 0.5 }}
+              >
+                <Text
+                  fontSize="3.6vmin"
+                  fontWeight={isActive ? "400" : "300"}
+                  color={isActive ? "white" : "gray.500"}
+                  letterSpacing="0.02em"
+                >
+                  {m.label}
+                </Text>
+              </Box>
+            );
+          })}
+        </HStack>
+      </Box>
 
     </Box>
   );

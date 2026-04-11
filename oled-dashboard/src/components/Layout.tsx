@@ -4,8 +4,11 @@ import { SocketViewListener } from "./SocketViewListener";
 import { PageTransition } from "./PageTransition";
 import { PixelShift } from "./PixelShift";
 import { LandscapeNav } from "./LandscapeNav";
+import { useThemeMode } from "../hooks/useThemeMode";
 
 export function Layout() {
+  // Drives the auto-mode timer and keeps theme state in sync app-wide.
+  useThemeMode();
   const location = useLocation();
   const isControl = location.pathname === "/control";
   const isBlank = location.pathname === "/blank";

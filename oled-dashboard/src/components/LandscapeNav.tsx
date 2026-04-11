@@ -46,7 +46,7 @@ export function LandscapeNav() {
       width="56px"
       bg="#000"
       borderRight="1px solid"
-      borderColor="gray.900"
+      borderColor="var(--theme-divider)"
       display="flex"
       alignItems="center"
       justifyContent="center"
@@ -68,8 +68,8 @@ export function LandscapeNav() {
               height="40px"
               borderRadius="8px"
               bg={isActive ? "whiteAlpha.100" : "transparent"}
-              color={isActive ? "white" : "gray.600"}
-              _hover={{ color: "gray.400" }}
+              color={isActive ? "var(--theme-fg)" : "var(--theme-fg-muted)"}
+              _hover={{ color: "var(--theme-fg)" }}
               _active={{ opacity: 0.5 }}
               transition="all 0.15s"
             >
