@@ -6,7 +6,7 @@ import { fileURLToPath } from "node:url";
 import { Server } from "socket.io";
 
 import { PORT } from "./config.js";
-import { startMotionWatcher, setLastRoute } from "./ha-motion.js";
+import { startHaSocket, getState, setLastRoute } from "./ha-socket.js";
 import healthRouter from "./routes/health.js";
 import docsRouter from "./routes/docs.js";
 import weatherRouter from "./routes/weather.js";
@@ -14,7 +14,7 @@ import photosRouter from "./routes/photos.js";
 import viewsRouter from "./routes/views.js";
 import videosRouter from "./routes/videos.js";
 import energyRouter from "./routes/energy.js";
-import homeRouter, { fetchHomeData } from "./routes/home.js";
+import homeRouter from "./routes/home.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -24,7 +24,7 @@ const httpServer = createServer(app);
 
 const clientBuildDir =
   [path.join(__dirname, "dist"), path.join(__dirname, "build")].find((dir) =>
-    fs.existsSync(path.join(dir, "index.html"))
+    fs.existsSync(path.join(dir, "index.html")),
   ) ?? path.join(__dirname, "dist");
 
 const io = new Server(httpServer, {
@@ -58,6 +58,18 @@ io.on("connection", (socket) => {
     io.themeMode = pref;
     socket.broadcast.emit("theme_mode", pref);
   });
+
+  socket.on("entity:subscribe", (entityId) => {
+    if (typeof entityId !== "string" || !entityId) return;
+    socket.join(`entity:${entityId}`);
+    const cached = getState(entityId);
+    if (cached) socket.emit(entityId, cached);
+  });
+
+  socket.on("entity:unsubscribe", (entityId) => {
+    if (typeof entityId !== "string" || !entityId) return;
+    socket.leave(`entity:${entityId}`);
+  });
 });
 
 app.use(express.json());
@@ -81,15 +93,6 @@ app.get("/{*path}", (_req, res) => {
 
 httpServer.listen(PORT, () => {
   console.log(`OLED Dashboard server running on port ${PORT}`);
-  startMotionWatcher(io);
-
-  // Poll HA every 10s and push home data to all clients via Socket.IO
-  setInterval(async () => {
-    try {
-      const data = await fetchHomeData();
-      io.emit("home_update", data);
-    } catch (err) {
-      console.error("Home broadcast error:", err.message);
-    }
-  }, 10_000);
+  io.emit("ready");
+  startHaSocket(io);
 });

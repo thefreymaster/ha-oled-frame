@@ -747,7 +747,7 @@ export function HomeOverview() {
   return (
     <Box
       width="100%"
-      height="100vh"
+      height="95vh"
       bg="var(--theme-bg)"
       overflow="hidden"
       display="flex"
@@ -755,7 +755,7 @@ export function HomeOverview() {
       alignItems={isLandscape ? "flex-start" : "center"}
       justifyContent={isLandscape ? "flex-start" : "space-evenly"}
       px={isLandscape ? "3vmin" : "6vmin"}
-      py="4vh"
+      py={isLandscape ? "4" : "0"}
       gap={isLandscape ? "4vmin" : "0"}
     >
       {isLandscape ? (

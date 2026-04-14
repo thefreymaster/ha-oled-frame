@@ -81,182 +81,188 @@ export function Control() {
         display="flex"
         flexDirection="column"
       >
-      {/* Use as frame */}
-      <Text
-        fontSize="min(3.5vmin, 15px)"
-        color="var(--theme-fg-faint)"
-        cursor="pointer"
-        _active={{ opacity: 0.5 }}
-        mb="min(4.5vmin, 20px)"
-        onClick={() => {
-          setDeviceMode("frame");
-          window.location.href = "/home";
-        }}
-      >
-        Use as display frame
-      </Text>
-      <Box height="1px" bg="var(--theme-divider)" mb="min(8vmin, 36px)" />
-
-      {/* Header */}
-      <HStack justify="space-between" align="baseline" mb="min(8vmin, 36px)">
+        {/* Use as frame */}
         <Text
-          fontSize="min(5vmin, 28px)"
-          color="var(--theme-fg)"
-          fontWeight="300"
-          letterSpacing="0.02em"
+          fontSize="min(3.5vmin, 15px)"
+          color="var(--theme-fg-faint)"
+          cursor="pointer"
+          _active={{ opacity: 0.5 }}
+          mb="min(4.5vmin, 20px)"
+          onClick={() => {
+            setDeviceMode("frame");
+            window.location.href = "/home";
+          }}
         >
-          Control
+          Use as display frame
         </Text>
-        <HStack gap="min(1.5vmin, 8px)" align="center">
-          <Box
-            width="5px"
-            height="5px"
-            borderRadius="full"
-            bg={connected ? "green.700" : "var(--theme-fg-faint)"}
-          />
-          <Text fontSize="min(3vmin, 13px)" color="var(--theme-fg-faint)">
-            {connected ? "connected" : "disconnected"}
+        <Box height="1px" bg="var(--theme-divider)" mb="min(8vmin, 36px)" />
+
+        {/* Header */}
+        <HStack justify="space-between" align="baseline" mb="min(8vmin, 36px)">
+          <Text
+            fontSize="min(5vmin, 28px)"
+            color="var(--theme-fg)"
+            fontWeight="300"
+            letterSpacing="0.02em"
+          >
+            Control
           </Text>
+          <HStack gap="min(1.5vmin, 8px)" align="center">
+            <Box
+              width="5px"
+              height="5px"
+              borderRadius="full"
+              bg={connected ? "green.700" : "var(--theme-fg-faint)"}
+            />
+            <Text fontSize="min(3vmin, 13px)" color="var(--theme-fg-faint)">
+              {connected ? "connected" : "disconnected"}
+            </Text>
+          </HStack>
         </HStack>
-      </HStack>
 
-      {/* View rows */}
-      <VStack gap={0} align="stretch" width="100%">
-        {VIEWS.map((v, i) => {
-          const isActive = activeView === v.path;
-          const isPhotos = v.path === "/photos";
+        {/* View rows */}
+        <VStack gap={0} align="stretch" width="100%">
+          {VIEWS.map((v, i) => {
+            const isActive = activeView === v.path;
+            const isPhotos = v.path === "/photos";
 
-          return (
-            <Box key={v.path}>
-              {i > 0 && <Box height="1px" bg="var(--theme-divider)" />}
-              <HStack
-                justify="space-between"
-                align="center"
-                py="min(4.5vmin, 20px)"
-                cursor="pointer"
-                onClick={() => changeView(v.path)}
-                _active={{ opacity: 0.5 }}
-              >
-                <Text
-                  fontSize="min(4.5vmin, 22px)"
-                  fontWeight={isActive ? "400" : "300"}
-                  color={isActive ? "var(--theme-fg)" : "var(--theme-fg-dim)"}
-                  letterSpacing="0.01em"
+            return (
+              <Box key={v.path}>
+                {i > 0 && <Box height="1px" bg="var(--theme-divider)" />}
+                <HStack
+                  justify="space-between"
+                  align="center"
+                  py="min(4.5vmin, 20px)"
+                  cursor="pointer"
+                  onClick={() => changeView(v.path)}
+                  _active={{ opacity: 0.5 }}
                 >
-                  {v.label}
-                </Text>
-                <HStack gap="min(3vmin, 14px)" align="center">
-                  {isActive && (
-                    <Box
-                      width="5px"
-                      height="5px"
-                      borderRadius="full"
-                      bg="var(--theme-fg)"
-                    />
-                  )}
-                  {isPhotos && (
-                    <Box
-                      as="button"
-                      onClick={(e: React.MouseEvent) => {
-                        e.stopPropagation();
-                        nextPhoto();
-                      }}
-                      color="var(--theme-fg-faint)"
-                      _hover={{ color: "var(--theme-fg)" }}
-                      display="flex"
-                      alignItems="center"
-                      p="min(1vmin, 6px)"
-                    >
-                      <MdSkipNext size={20} />
-                    </Box>
-                  )}
+                  <Text
+                    fontSize="min(4.5vmin, 22px)"
+                    fontWeight={isActive ? "400" : "300"}
+                    color={isActive ? "var(--theme-fg)" : "var(--theme-fg-dim)"}
+                    letterSpacing="0.01em"
+                  >
+                    {v.label}
+                  </Text>
+                  <HStack gap="min(3vmin, 14px)" align="center">
+                    {isActive && (
+                      <Box
+                        width="5px"
+                        height="5px"
+                        borderRadius="full"
+                        bg="var(--theme-fg)"
+                      />
+                    )}
+                    {isPhotos && (
+                      <Box
+                        as="button"
+                        onClick={(e: React.MouseEvent) => {
+                          e.stopPropagation();
+                          nextPhoto();
+                        }}
+                        color="var(--theme-fg-faint)"
+                        _hover={{ color: "var(--theme-fg)" }}
+                        display="flex"
+                        alignItems="center"
+                        p="min(1vmin, 6px)"
+                      >
+                        <MdSkipNext size={20} />
+                      </Box>
+                    )}
+                  </HStack>
                 </HStack>
-              </HStack>
-            </Box>
-          );
-        })}
-      </VStack>
+              </Box>
+            );
+          })}
+        </VStack>
 
-      {/* Display mode */}
-      <Box mt="min(10vmin, 48px)">
-        <HStack justify="space-between" align="baseline" mb="min(3vmin, 14px)">
+        {/* Display mode */}
+        <Box mt="min(10vmin, 48px)">
+          <HStack
+            justify="space-between"
+            align="baseline"
+            mb="min(3vmin, 14px)"
+          >
+            <Text
+              fontSize="min(3.2vmin, 14px)"
+              color="var(--theme-fg-muted)"
+              letterSpacing="0.12em"
+              textTransform="uppercase"
+            >
+              Display mode
+            </Text>
+            {preference === "auto" && (
+              <Text fontSize="min(2.8vmin, 13px)" color="var(--theme-fg-faint)">
+                auto · {effectiveMode}
+              </Text>
+            )}
+          </HStack>
+          <HStack gap="min(2vmin, 10px)" width="100%">
+            {THEME_MODES.map((m) => {
+              const isActive = preference === m.value;
+              return (
+                <Box
+                  key={m.value}
+                  as="button"
+                  flex="1"
+                  py="min(3.5vmin, 16px)"
+                  borderRadius="8px"
+                  bg="transparent"
+                  border="1px solid"
+                  borderColor={
+                    isActive ? "var(--theme-fg-dim)" : "var(--theme-divider)"
+                  }
+                  onClick={() => setPreference(m.value)}
+                  _active={{ opacity: 0.5 }}
+                >
+                  <Text
+                    fontSize="min(3.6vmin, 16px)"
+                    fontWeight={isActive ? "400" : "300"}
+                    color={isActive ? "var(--theme-fg)" : "var(--theme-fg-dim)"}
+                    letterSpacing="0.02em"
+                  >
+                    {m.label}
+                  </Text>
+                </Box>
+              );
+            })}
+          </HStack>
+        </Box>
+
+        {/* Album */}
+        <Box mt="min(10vmin, 48px)">
           <Text
             fontSize="min(3.2vmin, 14px)"
             color="var(--theme-fg-muted)"
             letterSpacing="0.12em"
             textTransform="uppercase"
+            mb="min(3vmin, 14px)"
           >
-            Display mode
+            Album
           </Text>
-          {preference === "auto" && (
-            <Text fontSize="min(2.8vmin, 13px)" color="var(--theme-fg-faint)">
-              auto · {effectiveMode}
-            </Text>
-          )}
-        </HStack>
-        <HStack gap="min(2vmin, 10px)" width="100%">
-          {THEME_MODES.map((m) => {
-            const isActive = preference === m.value;
-            return (
-              <Box
-                key={m.value}
-                as="button"
-                flex="1"
-                py="min(3.5vmin, 16px)"
-                borderRadius="8px"
-                bg="transparent"
-                border="1px solid"
-                borderColor={isActive ? "var(--theme-fg-dim)" : "var(--theme-divider)"}
-                onClick={() => setPreference(m.value)}
-                _active={{ opacity: 0.5 }}
-              >
-                <Text
-                  fontSize="min(3.6vmin, 16px)"
-                  fontWeight={isActive ? "400" : "300"}
-                  color={isActive ? "var(--theme-fg)" : "var(--theme-fg-dim)"}
-                  letterSpacing="0.02em"
-                >
-                  {m.label}
-                </Text>
-              </Box>
-            );
-          })}
-        </HStack>
-      </Box>
-
-      {/* Album */}
-      <Box mt="min(10vmin, 48px)">
-        <Text
-          fontSize="min(3.2vmin, 14px)"
-          color="var(--theme-fg-muted)"
-          letterSpacing="0.12em"
-          textTransform="uppercase"
-          mb="min(3vmin, 14px)"
-        >
-          Album
-        </Text>
-        <select
-          style={{
-            width: "100%",
-            padding: "min(3.5vmin, 16px) min(3vmin, 14px)",
-            borderRadius: "8px",
-            background: "transparent",
-            border: "1px solid var(--theme-divider)",
-            color: "var(--theme-fg)",
-            fontSize: "min(3.6vmin, 16px)",
-            fontWeight: 300,
-          }}
-          value={photosConfig?.defaultAlbumId ?? ""}
-          onChange={handleAlbumChange}
-        >
-          {!photosConfig?.defaultAlbumId && <option value="">—</option>}
-          {photosConfig?.options.map((id) => (
-            <option key={id} value={id} style={{ background: "#000" }}>
-              {id}
-            </option>
-          ))}
-        </select>
-      </Box>
+          <select
+            style={{
+              width: "100%",
+              padding: "min(3.5vmin, 16px) min(3vmin, 14px)",
+              borderRadius: "8px",
+              background: "transparent",
+              border: "1px solid var(--theme-divider)",
+              color: "var(--theme-fg)",
+              fontSize: "min(3.6vmin, 16px)",
+              fontWeight: 300,
+            }}
+            value={photosConfig?.defaultAlbumId ?? ""}
+            onChange={handleAlbumChange}
+          >
+            {!photosConfig?.defaultAlbumId && <option value="">—</option>}
+            {photosConfig?.options.map((id) => (
+              <option key={id} value={id} style={{ background: "#000" }}>
+                {id}
+              </option>
+            ))}
+          </select>
+        </Box>
       </Box>
     </Box>
   );

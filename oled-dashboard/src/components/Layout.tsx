@@ -6,9 +6,11 @@ import { PixelShift } from "./PixelShift";
 import { LandscapeNav } from "./LandscapeNav";
 import { useThemeMode } from "../hooks/useThemeMode";
 import { useScreenType } from "../hooks/useScreenType";
+import { useReady } from "../hooks/useReady";
 
 export function Layout() {
   useThemeMode();
+  useReady();
   const location = useLocation();
   const screenType = useScreenType();
   const isControl = location.pathname === "/control";

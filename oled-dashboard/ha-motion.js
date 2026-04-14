@@ -61,111 +61,111 @@ export async function setLastRoute(route) {
   }
 }
 
-export function startMotionWatcher(io) {
-  if (!HA_TOKEN) {
-    console.warn("[ha-motion] HA_TOKEN not set — motion watcher disabled");
-    return;
-  }
+// export function startMotionWatcher(io) {
+//   if (!HA_TOKEN) {
+//     console.warn("[ha-motion] HA_TOKEN not set — motion watcher disabled");
+//     return;
+//   }
 
-  let msgId = 1;
-  let blankTimer = null;
+//   let msgId = 1;
+//   let blankTimer = null;
 
-  function clearBlankTimer() {
-    if (blankTimer) {
-      clearTimeout(blankTimer);
-      blankTimer = null;
-    }
-  }
+//   function clearBlankTimer() {
+//     if (blankTimer) {
+//       clearTimeout(blankTimer);
+//       blankTimer = null;
+//     }
+//   }
 
-  function broadcast(view) {
-    console.log(`[ha-motion] → change_view: ${view}`);
-    io.currentView = view;
-    io.emit("change_view", view);
-  }
+//   function broadcast(view) {
+//     console.log(`[ha-motion] → change_view: ${view}`);
+//     io.currentView = view;
+//     io.emit("change_view", view);
+//   }
 
-  function startBlankTimer() {
-    clearBlankTimer();
-    blankTimer = setTimeout(() => broadcast("blank"), BLANK_TIMEOUT_MS);
-  }
+//   function startBlankTimer() {
+//     clearBlankTimer();
+//     blankTimer = setTimeout(() => broadcast("blank"), BLANK_TIMEOUT_MS);
+//   }
 
-  async function onMotionOn() {
-    clearBlankTimer();
-    const lastRoute = await getLastRoute();
-    console.log(`[ha-motion] motion detected, restoring route: ${lastRoute}`);
-    broadcast(lastRoute);
-    startBlankTimer();
-  }
+//   async function onMotionOn() {
+//     clearBlankTimer();
+//     const lastRoute = await getLastRoute();
+//     console.log(`[ha-motion] motion detected, restoring route: ${lastRoute}`);
+//     broadcast(lastRoute);
+//     startBlankTimer();
+//   }
 
-  function connect() {
-    const wsUrl = HA_URL.replace(/^http/, "ws") + "/api/websocket";
-    console.log(`[ha-motion] connecting to ${wsUrl}`);
-    const ws = new WebSocket(wsUrl);
+//   function connect() {
+//     const wsUrl = HA_URL.replace(/^http/, "ws") + "/api/websocket";
+//     console.log(`[ha-motion] connecting to ${wsUrl}`);
+//     const ws = new WebSocket(wsUrl);
 
-    ws.on("message", (raw) => {
-      let msg;
-      try {
-        msg = JSON.parse(raw);
-      } catch {
-        return;
-      }
+//     ws.on("message", (raw) => {
+//       let msg;
+//       try {
+//         msg = JSON.parse(raw);
+//       } catch {
+//         return;
+//       }
 
-      if (msg.type === "auth_required") {
-        ws.send(JSON.stringify({ type: "auth", access_token: HA_TOKEN }));
-        return;
-      }
+//       if (msg.type === "auth_required") {
+//         ws.send(JSON.stringify({ type: "auth", access_token: HA_TOKEN }));
+//         return;
+//       }
 
-      if (msg.type === "auth_ok") {
-        console.log("[ha-motion] authenticated, subscribing to state_changed");
-        ws.send(
-          JSON.stringify({
-            id: msgId++,
-            type: "subscribe_events",
-            event_type: "state_changed",
-          }),
-        );
-        return;
-      }
+//       if (msg.type === "auth_ok") {
+//         console.log("[ha-motion] authenticated, subscribing to state_changed");
+//         ws.send(
+//           JSON.stringify({
+//             id: msgId++,
+//             type: "subscribe_events",
+//             event_type: "state_changed",
+//           }),
+//         );
+//         return;
+//       }
 
-      if (msg.type === "auth_invalid") {
-        console.error("[ha-motion] auth failed — check HA_TOKEN");
-        ws.close();
-        return;
-      }
+//       if (msg.type === "auth_invalid") {
+//         console.error("[ha-motion] auth failed — check HA_TOKEN");
+//         ws.close();
+//         return;
+//       }
 
-      if (msg.type === "event") {
-        const data = msg.event?.data;
-        if (!data) return;
+//       if (msg.type === "event") {
+//         const data = msg.event?.data;
+//         if (!data) return;
 
-        if (data.entity_id === MOTION_ENTITY) {
-          const state = data.new_state?.state;
-          if (state === "on") onMotionOn();
-          return;
-        }
+//         if (data.entity_id === MOTION_ENTITY) {
+//           const state = data.new_state?.state;
+//           if (state === "on") onMotionOn();
+//           return;
+//         }
 
-        if (data.entity_id === ALBUM_ENTITY) {
-          const prev = data.old_state?.state;
-          const next = data.new_state?.state;
-          if (prev !== next) {
-            console.log(`[ha-motion] album changed: ${prev} → ${next}`);
-            io.emit("photos_refresh");
-          }
-          return;
-        }
-      }
-    });
+//         if (data.entity_id === ALBUM_ENTITY) {
+//           const prev = data.old_state?.state;
+//           const next = data.new_state?.state;
+//           if (prev !== next) {
+//             console.log(`[ha-motion] album changed: ${prev} → ${next}`);
+//             io.emit("photos_refresh");
+//           }
+//           return;
+//         }
+//       }
+//     });
 
-    ws.on("error", (err) => {
-      console.error("[ha-motion] WebSocket error:", err.message);
-    });
+//     ws.on("error", (err) => {
+//       console.error("[ha-motion] WebSocket error:", err.message);
+//     });
 
-    ws.on("close", () => {
-      console.warn(
-        `[ha-motion] disconnected, reconnecting in ${RECONNECT_DELAY_MS / 1000}s`,
-      );
-      clearBlankTimer();
-      setTimeout(connect, RECONNECT_DELAY_MS);
-    });
-  }
+//     ws.on("close", () => {
+//       console.warn(
+//         `[ha-motion] disconnected, reconnecting in ${RECONNECT_DELAY_MS / 1000}s`,
+//       );
+//       clearBlankTimer();
+//       setTimeout(connect, RECONNECT_DELAY_MS);
+//     });
+//   }
 
-  connect();
-}
+//   connect();
+// }
