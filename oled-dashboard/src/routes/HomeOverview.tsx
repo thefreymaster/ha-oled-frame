@@ -181,7 +181,7 @@ function Header({ internet }: { internet: HomeInternet }) {
         <NumberFlow
           digits={{ 2: { max: 2 } }}
           value={hours}
-          prefix={minutes < 10 ? "0" : ""}
+          prefix={hours < 10 ? "0" : ""}
         />
         :
         <NumberFlow
