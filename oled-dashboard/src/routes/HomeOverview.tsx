@@ -401,13 +401,13 @@ function EnergySection({ energy }: { energy: HomeEnergy }) {
       <VStack width="100%" align="stretch" gap="0.4vmin">
         {/* Today totals */}
         <VStack align="flex-start" gap="0.4vmin" width="100%">
-          <Text
+          {/* <Text
             fontSize="2.6vmin"
             color="var(--theme-fg-faint)"
             letterSpacing="0.1em"
           >
             TODAY
-          </Text>
+          </Text> */}
           <Grid
             templateColumns="repeat(12, 1fr)"
             gap="1.5vmin"
@@ -465,7 +465,7 @@ function EnergySection({ energy }: { energy: HomeEnergy }) {
         </VStack>
 
         {/* Real-time power */}
-        <VStack align="flex-start" gap="0.4vmin" width="100%">
+        {/* <VStack align="flex-start" gap="0.4vmin" width="100%">
           <Text
             fontSize="2.6vmin"
             color="var(--theme-fg-faint)"
@@ -522,7 +522,7 @@ function EnergySection({ energy }: { energy: HomeEnergy }) {
               </HStack>
             </GridItem>
           </Grid>
-        </VStack>
+        </VStack> */}
       </VStack>
     </Box>
   );
@@ -753,9 +753,8 @@ export function HomeOverview() {
       display="flex"
       flexDirection={isLandscape ? "row" : "column"}
       alignItems={isLandscape ? "flex-start" : "center"}
-      justifyContent={isLandscape ? "flex-start" : "space-evenly"}
-      px={isLandscape ? "3vmin" : "6vmin"}
-      py={isLandscape ? "4" : "0"}
+      justifyContent={isLandscape ? "flex-start" : "space-between"}
+      p={isLandscape ? "8" : "18"}
       gap={isLandscape ? "4vmin" : "0"}
     >
       {isLandscape ? (
