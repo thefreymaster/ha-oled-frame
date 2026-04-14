@@ -748,7 +748,7 @@ export function HomeOverview() {
       flexDirection={isLandscape ? "row" : "column"}
       alignItems={isLandscape ? "flex-start" : "center"}
       justifyContent={isLandscape ? "flex-start" : "space-between"}
-      p={isLandscape ? "8" : "16"}
+      p={isLandscape ? "8" : "10"}
       gap={isLandscape ? "4vmin" : "0"}
     >
       {isLandscape ? (
