@@ -214,6 +214,8 @@ export function Photos() {
       bg="var(--theme-bg)"
       position="relative"
       overflow="hidden"
+      onClick={advancePhoto}
+      cursor="pointer"
     >
       {photosPending && (
         <Box
