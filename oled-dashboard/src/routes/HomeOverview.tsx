@@ -200,7 +200,7 @@ function Header({
         <Spacer />
       </HStack>
 
-      <HStack width="100%" align="flex-end" justify="space-between">
+      <HStack width="100%" align="start" justify="space-between">
         {/* Time */}
         <Text
           fontSize="14vmin"
@@ -234,8 +234,8 @@ function Header({
         {/* Weather — right of time */}
         {weather && (
           <VStack align="flex-end" gap="0.5vmin" pb="0.5vmin">
-            <HStack align="center" gap="1.5vmin">
-              {Icon && (
+            <HStack align="start" gap="1.5vmin">
+              {/* {Icon && (
                 <Box
                   fontSize="8vmin"
                   lineHeight="1"
@@ -243,10 +243,10 @@ function Header({
                 >
                   <Icon size="1em" />
                 </Box>
-              )}
+              )} */}
               {weather.temperature != null && (
                 <Text
-                  fontSize="10vmin"
+                  fontSize="14vmin"
                   fontWeight="300"
                   letterSpacing="-0.03em"
                   color="var(--theme-fg-dim)"
@@ -256,7 +256,7 @@ function Header({
                 </Text>
               )}
             </HStack>
-            <HStack gap="2vmin" align="baseline">
+            <HStack gap="1vmin" align="baseline">
               <Text
                 fontSize="3.5vmin"
                 color="var(--theme-fg-dim)"

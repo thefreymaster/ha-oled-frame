@@ -17,6 +17,11 @@ body,
   overflow: hidden;
 }
 
+@keyframes slowZoom {
+  from { transform: scale(1); }
+  to   { transform: scale(1.2); }
+}
+
 /* Prevent text selection on display views */
 body {
   user-select: none;

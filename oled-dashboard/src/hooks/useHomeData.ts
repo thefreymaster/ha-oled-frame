@@ -6,9 +6,6 @@ export interface HomeWeather {
   state: string;
   temperature: number | null;
   humidity: number | null;
-  windSpeed: number | null;
-  windDirection: number | null;
-  pressure: number | null;
 }
 
 export interface HomeClimate {
@@ -123,12 +120,9 @@ async function fetchCalendar(): Promise<CalendarResponse> {
 
 export function useHomeData() {
   // Weather
-  const weather = useEntity<WeatherAttributes>("weather.kbos");
-  const kbosTemp = useEntity("sensor.kbos_temperature");
-  const kbosHumidity = useEntity("sensor.kbos_relative_humidity");
-  const kbosPressure = useEntity("sensor.kbos_barometric_pressure");
-  const kbosWindSpeed = useEntity("sensor.kbos_wind_speed");
-  const kbosWindDir = useEntity("sensor.kbos_wind_direction");
+  const weather = useEntity<WeatherAttributes>("weather.openweathermap");
+  const temperature = weather?.data?.attributes.temperature;
+  const humidity = weather?.data?.attributes.humidity;
 
   // Climate
   const climate1 = useEntity<ClimateAttributes>(CLIMATE_ENTITIES[0].id);
@@ -143,7 +137,9 @@ export function useHomeData() {
   // Printer
   const printerStatus = useEntity("sensor.a1_03919c442700723_print_status");
   const printerProgress = useEntity("sensor.a1_03919c442700723_print_progress");
-  const printerRemaining = useEntity("sensor.a1_03919c442700723_remaining_time");
+  const printerRemaining = useEntity(
+    "sensor.a1_03919c442700723_remaining_time",
+  );
   const printerTask = useEntity("sensor.a1_03919c442700723_task_name");
   const printerFinish = useEntity("sensor.a1_finish_time");
 
@@ -176,26 +172,10 @@ export function useHomeData() {
     if (!wx) return null;
     return {
       state: wx.state,
-      temperature:
-        parseFloatOrNull(kbosTemp.data?.state) ??
-        wx.attributes?.temperature ??
-        null,
-      humidity:
-        parseFloatOrNull(kbosHumidity.data?.state) ??
-        wx.attributes?.humidity ??
-        null,
-      windSpeed: parseFloatOrNull(kbosWindSpeed.data?.state),
-      windDirection: parseFloatOrNull(kbosWindDir.data?.state),
-      pressure: parseFloatOrNull(kbosPressure.data?.state),
+      temperature,
+      humidity,
     };
-  }, [
-    weather.data,
-    kbosTemp.data,
-    kbosHumidity.data,
-    kbosWindSpeed.data,
-    kbosWindDir.data,
-    kbosPressure.data,
-  ]);
+  }, [weather.data, temperature, humidity]);
 
   const homeClimate = useMemo<HomeClimate[]>(
     () => [
@@ -209,7 +189,10 @@ export function useHomeData() {
 
   const homePeople = useMemo<HomePerson[]>(
     () => [
-      { name: PERSON_ENTITIES[0].name, state: personEvan.data?.state ?? "unknown" },
+      {
+        name: PERSON_ENTITIES[0].name,
+        state: personEvan.data?.state ?? "unknown",
+      },
       {
         name: PERSON_ENTITIES[1].name,
         state: personElizabeth.data?.state ?? "unknown",

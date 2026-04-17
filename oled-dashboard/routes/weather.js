@@ -10,13 +10,7 @@ router.get("/", async (_req, res) => {
   }
 
   try {
-    const response = await fetch(`${HA_URL}/api/states/weather.kbos`, {
-      headers: {
-        Authorization: `Bearer ${HA_TOKEN}`,
-        "Content-Type": "application/json",
-      },
-    });
-    const response2 = await fetch(
+    const response = await fetch(
       `${HA_URL}/api/states/weather.openweathermap`,
       {
         headers: {
@@ -32,8 +26,6 @@ router.get("/", async (_req, res) => {
     }
 
     const data = await response.json();
-    const data2 = await response2.json();
-    console.log({ data, data2 });
     const attrs = data.attributes ?? {};
 
     res.json({

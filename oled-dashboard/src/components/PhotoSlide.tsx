@@ -16,6 +16,7 @@ export function PhotoSlide({ assetId, visible }: Props) {
       backgroundRepeat="no-repeat"
       transition="opacity 1.5s ease-in-out"
       opacity={visible ? 1 : 0}
+      style={{ animation: visible ? "slowZoom 30s linear forwards" : "none" }}
     />
   );
 }
