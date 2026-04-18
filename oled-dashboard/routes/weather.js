@@ -19,14 +19,42 @@ router.get("/", async (_req, res) => {
         },
       },
     );
+    const forcastResponse = await fetch(
+      `${HA_URL}/api/services/weather/get_forecasts?return_response`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${HA_TOKEN}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          entity_id: "weather.openweathermap_2",
+          type: "hourly",
+        }),
+      },
+    );
 
-    if (!response.ok) {
+    if (!response.ok || !forcastResponse.ok) {
       res.status(502).json({ error: `HA responded with ${response.status}` });
       return;
     }
 
     const data = await response.json();
+    const forecastData = await forcastResponse.json();
     const attrs = data.attributes ?? {};
+
+    const forecastList =
+      forecastData?.service_response?.["weather.openweathermap_2"]?.forecast ?? [];
+    const mapForecast = (f) => ({
+      datetime: f.datetime,
+      temperature: f.temperature,
+      templow: f.templow,
+      condition: f.condition,
+      precipitation: f.precipitation,
+      precipitationProbability: f.precipitation_probability,
+      windSpeed: f.wind_speed,
+      windBearing: f.wind_bearing,
+    });
 
     res.json({
       state: data.state,
@@ -37,16 +65,8 @@ router.get("/", async (_req, res) => {
       windBearing: attrs.wind_bearing,
       pressure: attrs.pressure,
       visibility: attrs.visibility,
-      forecast: (attrs.forecast ?? []).slice(0, 8).map((f) => ({
-        datetime: f.datetime,
-        temperature: f.temperature,
-        templow: f.templow,
-        condition: f.condition,
-        precipitation: f.precipitation,
-        precipitationProbability: f.precipitation_probability,
-        windSpeed: f.wind_speed,
-        windBearing: f.wind_bearing,
-      })),
+      forecast: (attrs.forecast ?? []).slice(0, 8).map(mapForecast),
+      forecastDaily: forecastList.slice(0, 8).map(mapForecast),
     });
   } catch (err) {
     console.error("Weather fetch error:", err);

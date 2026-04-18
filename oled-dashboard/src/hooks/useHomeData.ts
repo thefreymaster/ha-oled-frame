@@ -2,10 +2,22 @@ import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useEntity, type HAState } from "./useEntity";
 
+export interface HomeForecastPeriod {
+  datetime: string;
+  temperature: number | null;
+  templow: number | null;
+  condition: string | null;
+  precipitation: number | null;
+  precipitationProbability: number | null;
+  windSpeed: number | null;
+  windBearing: number | null;
+}
+
 export interface HomeWeather {
   state: string;
   temperature: number | null;
   humidity: number | null;
+  forecast: HomeForecastPeriod[];
 }
 
 export interface HomeClimate {
@@ -66,9 +78,11 @@ interface CalendarResponse {
   tomorrow: HomeCalendarEvent[];
 }
 
-interface WeatherAttributes {
+interface WeatherResponse {
+  state: string;
   temperature?: number;
   humidity?: number;
+  forecast: HomeForecastPeriod[];
 }
 
 interface ClimateAttributes {
@@ -118,11 +132,20 @@ async function fetchCalendar(): Promise<CalendarResponse> {
   return res.json() as Promise<CalendarResponse>;
 }
 
+async function fetchWeather(): Promise<WeatherResponse> {
+  const res = await fetch("/api/home/weather");
+  if (!res.ok) throw new Error(`Weather fetch failed: ${res.status}`);
+  return res.json() as Promise<WeatherResponse>;
+}
+
 export function useHomeData() {
   // Weather
-  const weather = useEntity<WeatherAttributes>("weather.openweathermap");
-  const temperature = weather?.data?.attributes.temperature;
-  const humidity = weather?.data?.attributes.humidity;
+  const weatherQuery = useQuery<WeatherResponse>({
+    queryKey: ["home", "weather"],
+    queryFn: fetchWeather,
+    refetchInterval: 1000 * 60 * 5,
+    staleTime: 1000 * 60 * 5,
+  });
 
   // Climate
   const climate1 = useEntity<ClimateAttributes>(CLIMATE_ENTITIES[0].id);
@@ -167,16 +190,16 @@ export function useHomeData() {
     staleTime: 1000 * 60 * 5,
   });
 
-  // @ts-ignore
   const homeWeather = useMemo<HomeWeather | null>(() => {
-    const wx = weather.data;
+    const wx = weatherQuery.data;
     if (!wx) return null;
     return {
       state: wx.state,
-      temperature,
-      humidity,
+      temperature: wx.temperature ?? null,
+      humidity: wx.humidity ?? null,
+      forecast: wx.forecast ?? [],
     };
-  }, [weather.data, temperature, humidity]);
+  }, [weatherQuery.data]);
 
   const homeClimate = useMemo<HomeClimate[]>(
     () => [
@@ -260,7 +283,7 @@ export function useHomeData() {
     ],
   );
 
-  const isPending = weather.data === undefined;
+  const isPending = weatherQuery.isPending;
 
   return {
     data,

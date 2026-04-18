@@ -28,6 +28,7 @@ import {
 import { PiSolarRoof } from "react-icons/pi";
 import NumberFlow from "@number-flow/react";
 import { IoFlash } from "react-icons/io5";
+import { WeatherForecast } from "../components/WeatherForecast";
 import { useHomeData } from "../hooks/useHomeData";
 import type {
   HomeClimate,
@@ -203,7 +204,7 @@ function Header({
       <HStack width="100%" align="start" justify="space-between">
         {/* Time */}
         <Text
-          fontSize="14vmin"
+          fontSize="18vmin"
           fontWeight="300"
           letterSpacing="-0.03em"
           lineHeight="0.9"
@@ -235,15 +236,6 @@ function Header({
         {weather && (
           <VStack align="flex-end" gap="0.5vmin" pb="0.5vmin">
             <HStack align="start" gap="1.5vmin">
-              {/* {Icon && (
-                <Box
-                  fontSize="8vmin"
-                  lineHeight="1"
-                  color="var(--theme-fg-dim)"
-                >
-                  <Icon size="1em" />
-                </Box>
-              )} */}
               {weather.temperature != null && (
                 <Text
                   fontSize="14vmin"
@@ -277,6 +269,12 @@ function Header({
           </VStack>
         )}
       </HStack>
+
+      {weather && weather.forecast.length > 0 && (
+        <Box width="100%" mt="2vmin">
+          <WeatherForecast forecast={weather.forecast} count={6} />
+        </Box>
+      )}
     </Box>
   );
 }

@@ -72,6 +72,65 @@ async function fetchCalendarEvents() {
   return { today, tomorrow };
 }
 
+const WEATHER_HEADERS = (token) => ({
+  Authorization: `Bearer ${token}`,
+  "Content-Type": "application/json",
+});
+
+const mapForecast = (f) => ({
+  datetime: f.datetime,
+  temperature: f.temperature,
+  templow: f.templow,
+  condition: f.condition,
+  precipitation: f.precipitation,
+  precipitationProbability: f.precipitation_probability,
+  windSpeed: f.wind_speed,
+  windBearing: f.wind_bearing,
+});
+
+router.get("/weather", async (_req, res) => {
+  if (!HA_TOKEN) {
+    res.status(503).json({ error: "HA_TOKEN not configured" });
+    return;
+  }
+  try {
+    const [currentRes, forecastRes] = await Promise.all([
+      fetch(`${HA_URL}/api/states/weather.openweathermap`, {
+        headers: WEATHER_HEADERS(HA_TOKEN),
+      }),
+      fetch(
+        `${HA_URL}/api/services/weather/get_forecasts?return_response`,
+        {
+          method: "POST",
+          headers: WEATHER_HEADERS(HA_TOKEN),
+          body: JSON.stringify({
+            entity_id: "weather.openweathermap_2",
+            type: "hourly",
+          }),
+        },
+      ),
+    ]);
+    if (!currentRes.ok || !forecastRes.ok) {
+      res.status(502).json({ error: "HA weather fetch failed" });
+      return;
+    }
+    const current = await currentRes.json();
+    const forecastData = await forecastRes.json();
+    const attrs = current.attributes ?? {};
+    const forecastList =
+      forecastData?.service_response?.["weather.openweathermap_2"]?.forecast ?? [];
+    res.json({
+      state: current.state,
+      temperature: attrs.temperature,
+      humidity: attrs.humidity,
+      forecast: forecastList.slice(0, 8).map(mapForecast),
+    });
+  } catch (err) {
+    console.error("Home weather fetch error:", err);
+    res.status(500).json({ error: "Failed to fetch weather" });
+  }
+});
+
 router.get("/calendar", async (_req, res) => {
   if (!HA_TOKEN) {
     res.status(503).json({ error: "HA_TOKEN not configured" });

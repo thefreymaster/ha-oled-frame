@@ -1,26 +1,65 @@
 import { Box, HStack, VStack, Text } from "@chakra-ui/react";
-import type { ForecastPeriod } from "../hooks/useWeather";
+import {
+  WiDaySunny,
+  WiNightClear,
+  WiDayCloudy,
+  WiNightAltPartlyCloudy,
+  WiCloudy,
+  WiFog,
+  WiHail,
+  WiLightning,
+  WiThunderstorm,
+  WiNightAltThunderstorm,
+  WiRain,
+  WiShowers,
+  WiNightAltShowers,
+  WiSnow,
+  WiNightAltSnow,
+  WiRainMix,
+  WiStrongWind,
+  WiNa,
+} from "react-icons/wi";
 
-const CONDITION_EMOJI: Record<string, string> = {
-  "clear-night": "🌙",
-  cloudy: "☁️",
-  exceptional: "⚠️",
-  fog: "🌫️",
-  hail: "🌨️",
-  lightning: "⚡",
-  "lightning-rainy": "⛈️",
-  partlycloudy: "⛅",
-  pouring: "🌧️",
-  rainy: "🌧️",
-  snowy: "❄️",
-  "snowy-rainy": "🌨️",
-  sunny: "☀️",
-  windy: "💨",
-  "windy-variant": "💨",
+type IconComponent = React.ComponentType<{
+  size?: string | number;
+  color?: string;
+}>;
+
+const DAY_ICONS: Record<string, IconComponent> = {
+  sunny: WiDaySunny,
+  "clear-night": WiNightClear,
+  partlycloudy: WiDayCloudy,
+  cloudy: WiCloudy,
+  fog: WiFog,
+  hail: WiHail,
+  lightning: WiLightning,
+  "lightning-rainy": WiThunderstorm,
+  pouring: WiRain,
+  rainy: WiShowers,
+  snowy: WiSnow,
+  "snowy-rainy": WiRainMix,
+  windy: WiStrongWind,
+  "windy-variant": WiStrongWind,
+  exceptional: WiNa,
 };
 
-function conditionEmoji(condition: string) {
-  return CONDITION_EMOJI[condition] ?? "🌡️";
+const NIGHT_ICONS: Record<string, IconComponent> = {
+  ...DAY_ICONS,
+  sunny: WiNightClear,
+  partlycloudy: WiNightAltPartlyCloudy,
+  "lightning-rainy": WiNightAltThunderstorm,
+  rainy: WiNightAltShowers,
+  snowy: WiNightAltSnow,
+};
+
+function isNight(datetime: string) {
+  const h = new Date(datetime).getHours();
+  return h >= 20 || h < 6;
+}
+
+function getIcon(condition: string, datetime: string): IconComponent {
+  const map = isNight(datetime) ? NIGHT_ICONS : DAY_ICONS;
+  return map[condition] ?? WiNa;
 }
 
 function formatHour(datetime: string) {
@@ -32,13 +71,20 @@ function formatHour(datetime: string) {
   return `${h - 12}pm`;
 }
 
-interface Props {
-  forecast: ForecastPeriod[];
+interface ForecastItem {
+  datetime: string;
+  temperature: number | null;
+  condition: string | null;
+  precipitationProbability: number | null;
 }
 
-export function WeatherForecast({ forecast }: Props) {
-  // Show 5 periods — fits portrait width evenly
-  const periods = forecast.slice(0, 5);
+interface Props {
+  forecast: ForecastItem[];
+  count?: number;
+}
+
+export function WeatherForecast({ forecast, count = 5 }: Props) {
+  const periods = forecast.slice(0, count);
 
   return (
     <Box width="100%" px="2vmin">
@@ -53,27 +99,35 @@ export function WeatherForecast({ forecast }: Props) {
             py="2vmin"
           >
             <Text
-              
               fontSize="2.8vmin"
-              color="gray.500"
+              color="var(--theme-fg-dim)"
               letterSpacing="0.05em"
             >
               {formatHour(period.datetime)}
             </Text>
-            <Text fontSize="7vmin" lineHeight="1" role="img" aria-label={period.condition} opacity={0.35}>
-              {conditionEmoji(period.condition)}
-            </Text>
+            <Box
+              fontSize="7vmin"
+              lineHeight="1"
+              color="var(--theme-fg-dim)"
+              opacity={0.85}
+            >
+              {(() => {
+                const Icon = getIcon(period.condition ?? "", period.datetime);
+                return <Icon size="1em" />;
+              })()}
+            </Box>
             <Text
-              
               fontSize="4.5vmin"
-              color="gray.600"
+              color="var(--theme-fg-dim)"
               fontWeight="300"
             >
-              {period.temperature}°
+              {period.temperature != null
+                ? `${Math.round(period.temperature)}°`
+                : "—"}
             </Text>
             {period.precipitationProbability != null &&
-              period.precipitationProbability > 0 ? (
-              <Text  fontSize="2.8vmin" color="blue.700">
+            period.precipitationProbability > 0 ? (
+              <Text fontSize="2.8vmin" color="blue.400">
                 {period.precipitationProbability}%
               </Text>
             ) : (
