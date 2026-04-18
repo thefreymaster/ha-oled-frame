@@ -57,6 +57,11 @@ io.on("connection", (socket) => {
     socket.broadcast.emit("next_photo");
   });
 
+  socket.on("refresh", () => {
+    console.log({ io: "refresh" });
+    socket.broadcast.emit("reload");
+  });
+
   socket.on("theme_mode", (pref) => {
     if (pref !== "auto" && pref !== "bright" && pref !== "dark") return;
     console.log({ io: "theme_mode", pref });

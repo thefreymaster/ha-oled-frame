@@ -6,6 +6,7 @@ import {
   MdAccessTime,
   MdPhotoLibrary,
   MdLightbulb,
+  MdRefresh,
 } from "react-icons/md";
 import type { IconType } from "react-icons";
 import { useNavigate } from "react-router";
@@ -222,6 +223,29 @@ export function Control() {
               </Box>
             );
           })}
+        </Box>
+
+        {/* Refresh all frames */}
+        <Box
+          as="button"
+          mt="min(3vmin, 14px)"
+          width="100%"
+          py="min(3.5vmin, 16px)"
+          borderRadius="8px"
+          bg="transparent"
+          border="1px solid var(--theme-divider)"
+          display="flex"
+          alignItems="center"
+          justifyContent="center"
+          gap="min(2vmin, 10px)"
+          color="var(--theme-fg-dim)"
+          _active={{ opacity: 0.5 }}
+          onClick={() => socket.emit("refresh")}
+        >
+          <MdRefresh size={18} />
+          <Text fontSize="min(3.6vmin, 16px)" fontWeight="300" letterSpacing="0.02em">
+            Refresh displays
+          </Text>
         </Box>
 
         </Box>
