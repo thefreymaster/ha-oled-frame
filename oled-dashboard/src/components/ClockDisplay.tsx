@@ -34,18 +34,18 @@ export function ClockDisplay() {
         fontSize="21vmin"
         fontWeight="200"
         letterSpacing="-0.02em"
-        color="gray.400"
+        color="gray.200"
         lineHeight="1"
       >
         {hours}:{minutes}
-        <Text as="span" fontSize="8vmin" fontWeight="300" color="gray.500" ml="2vmin">
+        <Text as="span" fontSize="8vmin" fontWeight="300" color="gray.300" ml="2vmin">
           {ampm}
         </Text>
       </Text>
 
       <Text
         fontSize="5.5vmin"
-        color="gray.400"
+        color="gray.200"
         mt="3vmin"
         letterSpacing="0.08em"
       >
@@ -53,7 +53,7 @@ export function ClockDisplay() {
       </Text>
       <Text
         fontSize="4.5vmin"
-        color="gray.600"
+        color="gray.400"
         letterSpacing="0.06em"
       >
         {month} {date}, {year}

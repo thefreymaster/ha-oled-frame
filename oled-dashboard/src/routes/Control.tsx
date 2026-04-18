@@ -12,6 +12,7 @@ import type { IconType } from "react-icons";
 import { useNavigate } from "react-router";
 import { useQueryClient } from "@tanstack/react-query";
 import { useSocket } from "../hooks/useSocket";
+import { Divider } from "../components/Divider";
 import { socket } from "../lib/socket";
 import { setDeviceMode } from "../lib/deviceMode";
 import { useThemeMode } from "../hooks/useThemeMode";
@@ -115,7 +116,7 @@ export function Control() {
         >
           Use as display frame
         </Text>
-        <Box height="1px" bg="var(--theme-divider)" mb="min(8vmin, 36px)" />
+        <Divider mb="min(8vmin, 36px)" />
 
         {/* Header */}
         <HStack justify="space-between" align="baseline" mb="min(8vmin, 36px)">

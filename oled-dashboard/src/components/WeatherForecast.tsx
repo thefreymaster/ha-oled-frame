@@ -85,57 +85,74 @@ interface Props {
 
 export function WeatherForecast({ forecast, count = 5 }: Props) {
   const periods = forecast.slice(0, count);
+  const cols = periods.length;
 
   return (
-    <Box width="100%" px="2vmin">
-      <HStack gap={0} justify="space-between" align="stretch">
-        {periods.map((period, i) => (
-          <VStack
-            key={i}
-            gap="1vmin"
-            align="center"
-            flex={1}
+    <Box
+      width="100%"
+      display="grid"
+      gridTemplateColumns={`repeat(${cols}, 1fr)`}
+      gridTemplateRows="auto auto auto auto"
+      rowGap="1vmin"
+      alignItems="center"
+      justifyItems="center"
+    >
+      {periods.map((period, i) => (
+        <Text
+          key={`hour-${i}`}
+          gridRow={1}
+          fontSize="2.8vmin"
+          color="var(--theme-fg-dim)"
+          letterSpacing="0.05em"
+          textAlign="center"
+        >
+          {formatHour(period.datetime)}
+        </Text>
+      ))}
+      {periods.map((period, i) => (
+        <Box
+          key={`icon-${i}`}
+          gridRow={2}
+          fontSize="7vmin"
+          lineHeight="1"
+          color="var(--theme-fg-dim)"
+        >
+          {(() => {
+            const Icon = getIcon(period.condition ?? "", period.datetime);
+            return <Icon size="1em" />;
+          })()}
+        </Box>
+      ))}
+      {periods.map((period, i) => (
+        <Text
+          key={`temp-${i}`}
+          gridRow={3}
+          fontSize="4.5vmin"
+          color="var(--theme-fg-dim)"
+          fontWeight="300"
+          textAlign="center"
+          opacity={i === 0 ? 1 : 0.65}
+        >
+          {period.temperature != null
+            ? `${Math.round(period.temperature)}°`
+            : "—"}
+        </Text>
+      ))}
+      {periods.map((period, i) =>
+        period.precipitationProbability != null &&
+        period.precipitationProbability > 0 ? (
+          <Text
+            key={`precip-${i}`}
+            gridRow={4}
+            fontSize="2.8vmin"
+            color="blue.400"
+            textAlign="center"
             opacity={i === 0 ? 1 : 0.65}
-            py="2vmin"
           >
-            <Text
-              fontSize="2.8vmin"
-              color="var(--theme-fg-dim)"
-              letterSpacing="0.05em"
-            >
-              {formatHour(period.datetime)}
-            </Text>
-            <Box
-              fontSize="7vmin"
-              lineHeight="1"
-              color="var(--theme-fg-dim)"
-              opacity={0.85}
-            >
-              {(() => {
-                const Icon = getIcon(period.condition ?? "", period.datetime);
-                return <Icon size="1em" />;
-              })()}
-            </Box>
-            <Text
-              fontSize="4.5vmin"
-              color="var(--theme-fg-dim)"
-              fontWeight="300"
-            >
-              {period.temperature != null
-                ? `${Math.round(period.temperature)}°`
-                : "—"}
-            </Text>
-            {period.precipitationProbability != null &&
-            period.precipitationProbability > 0 ? (
-              <Text fontSize="2.8vmin" color="blue.400">
-                {period.precipitationProbability}%
-              </Text>
-            ) : (
-              <Box height="2.8vmin" />
-            )}
-          </VStack>
-        ))}
-      </HStack>
+            {period.precipitationProbability}%
+          </Text>
+        ) : null,
+      )}
     </Box>
   );
 }

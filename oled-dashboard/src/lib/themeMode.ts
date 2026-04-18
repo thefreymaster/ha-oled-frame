@@ -13,10 +13,10 @@ type ThemeVars = Record<string, string>;
 
 const DARK_VARS: ThemeVars = {
   "--theme-bg": "#000000",
-  "--theme-fg": "#A0AEC0", // gray.400
-  "--theme-fg-dim": "#718096", // gray.500
-  "--theme-fg-muted": "#4A5568", // gray.600
-  "--theme-fg-faint": "#2D3748", // gray.700
+  "--theme-fg": "#E2E8F0", // gray.200
+  "--theme-fg-dim": "#A0AEC0", // gray.400
+  "--theme-fg-muted": "#718096", // gray.500
+  "--theme-fg-faint": "#4A5568", // gray.600
   "--theme-divider": "#171923", // gray.900
   "--theme-marker-cardinal": "#666666",
   "--theme-marker-hour": "#444444",

@@ -29,6 +29,7 @@ import { PiSolarRoof } from "react-icons/pi";
 import NumberFlow from "@number-flow/react";
 import { IoFlash } from "react-icons/io5";
 import { WeatherForecast } from "../components/WeatherForecast";
+import { Divider } from "../components/Divider";
 import { useHomeData } from "../hooks/useHomeData";
 import type {
   HomeClimate,
@@ -148,14 +149,6 @@ function useIsLandscape() {
   return landscape;
 }
 
-// ── Divider ───────────────────────────────────────────────────────────────────
-
-function Divider() {
-  return (
-    <Box width="100%" height="1px" bg="var(--theme-divider)" flexShrink={0} />
-  );
-}
-
 // ── Header: date + time + temp ────────────────────────────────────────────────
 
 function Header({
@@ -241,7 +234,6 @@ function Header({
                   fontSize="14vmin"
                   fontWeight="300"
                   letterSpacing="-0.03em"
-                  color="var(--theme-fg-dim)"
                   lineHeight="1"
                 >
                   <NumberFlow value={Math.round(weather.temperature)} />°
@@ -272,6 +264,7 @@ function Header({
 
       {weather && weather.forecast.length > 0 && (
         <Box width="100%" mt="2vmin">
+          <Divider mb="2vmin" />
           <WeatherForecast forecast={weather.forecast} count={6} />
         </Box>
       )}
@@ -701,7 +694,7 @@ export function HomeOverview() {
       flexDirection={isLandscape ? "row" : "column"}
       alignItems={isLandscape ? "flex-start" : "center"}
       justifyContent={isLandscape ? "flex-start" : "space-between"}
-      p={isLandscape ? "8" : "16"}
+      p={isLandscape ? "8" : { base: "6", md: "16" }}
       gap={isLandscape ? "4vmin" : "0"}
     >
       {isLandscape ? (
@@ -721,6 +714,16 @@ export function HomeOverview() {
                 <PrinterSection printer={data.printer} />
               </>
             )}
+            {hasCalendar && (
+              <>
+                <Divider />
+                <CalendarSection
+                  today={data.calendar.today}
+                  tomorrow={data.calendar.tomorrow}
+                />
+                <Divider />
+              </>
+            )}
           </Box>
 
           {/* Right column — details */}
@@ -732,15 +735,6 @@ export function HomeOverview() {
             gap="2vmin"
             overflowY="auto"
           >
-            {hasCalendar && (
-              <>
-                <CalendarSection
-                  today={data.calendar.today}
-                  tomorrow={data.calendar.tomorrow}
-                />
-                <Divider />
-              </>
-            )}
             <ClimateSection climate={data.climate} />
             <Divider />
             <EnergySection energy={data.energy} />
